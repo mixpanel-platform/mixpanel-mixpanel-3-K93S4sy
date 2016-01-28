@@ -9,18 +9,43 @@
       div.chart {
         margin-top: 50px;
       }
+      
+      div.header {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
     </style>
   </head>
   <body class="mixpanel-platform-body">
     <div class="mixpanel-platform-section">
-      <div id="propSelect" style="float: left;"></div>
-      <div id="dateSelect" style="float: right;"></div>
+      <div id="unitSelect" style="float: right;"></div>
       <div style="clear: both;"></div>
     </div>
     <div id="table"></div>
     <script>
-      var intervals = 24;
-      var unit = "month";
+    
+    $(document).ready(function() {
+      $('.unitSelect').MPSelect({
+        items: [
+          {label: 'Day', value: 'day'},
+          {label: 'Week', value: 'week'},
+          {label: 'Month', value: 'month'}
+        ]
+      })
+      .on('change', function(e, selection) {
+        renderCharts(selection)
+      });
+      
+      renderCharts('day');
+    });
+    
+  
+    
+    
+    var renderCharts = function(unit) {
+
+      var intervals = 24;\\
       
       var startDate = moment().subtract(intervals, unit);
       var endDate = moment();
@@ -44,19 +69,32 @@
       
       var q = $.ajax({
         type: 'get',
-        url: 'https://josh.dev.mixpanel.org/admin/internal/api/query',
+        url: 'https://josh.dev.mixpanel.org/admin/internal/api/new_paid_users',
         data: {
           unit: unit,
           from: startDate.format('YYYY-MM-DD'),
           to: endDate.format('YYYY-MM-DD'),
-          value: 'dollar_amount'
+          value: 'user_count'
         },
         xhrFields: {
           withCredentials: true
         }
       });
       addGraph('New paid users', 'line', q);
-      
+
+      var q = $.ajax({
+        type: 'get',
+        url: 'https://josh.dev.mixpanel.org/admin/internal/api/plan_changes',
+        data: {
+          unit: unit,
+          from: startDate.format('YYYY-MM-DD'),
+          to: endDate.format('YYYY-MM-DD'),
+        },
+        xhrFields: {
+          withCredentials: true
+        }
+      });
+      addGraph('Plan changes', 'line', q);      
     </script>
   </body>
 </html>
