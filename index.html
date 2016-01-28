@@ -22,7 +22,7 @@
       <div class="unitSelect" style="float: right;"></div>
       <div style="clear: both;"></div>
     </div>
-    <div id="table"></div>
+    <div class="charts"></div>
     <script>
     
     $(document).ready(function() {
@@ -42,8 +42,9 @@
     
   
     var renderCharts = function(unit) {
-
-      var intervals = 24;
+      $('.charts').html('');
+      
+      var intervals = 30;
       
       var startDate = moment().subtract(intervals, unit);
       var endDate = moment();
@@ -54,7 +55,7 @@
       }
       
       var addGraph = function(name, type, query) {
-          var $wrapper = $('<div class="chart"><div class="header"></div><div class="body"></div></chart>').appendTo($('.mixpanel-platform-body'));
+          var $wrapper = $('<div class="chart"><div class="header"></div><div class="body"></div></chart>').appendTo($('.charts'));
           var $header = $wrapper.find('.header').text(name + " last " + intervals + " " + unit + "s");
           var $chart = $wrapper.find('.body').MPChart({chartType: type})
           query.done(function(results) {
