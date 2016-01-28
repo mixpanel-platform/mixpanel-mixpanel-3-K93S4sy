@@ -19,7 +19,7 @@
   </head>
   <body class="mixpanel-platform-body">
     <div class="mixpanel-platform-section">
-      <div id="unitSelect" style="float: right;"></div>
+      <div class="unitSelect" style="float: right;"></div>
       <div style="clear: both;"></div>
     </div>
     <div id="table"></div>
@@ -41,11 +41,9 @@
     });
     
   
-    
-    
     var renderCharts = function(unit) {
 
-      var intervals = 24;\\
+      var intervals = 24;
       
       var startDate = moment().subtract(intervals, unit);
       var endDate = moment();
@@ -94,7 +92,8 @@
           withCredentials: true
         }
       });
-      addGraph('Plan changes', 'line', q);      
+      addGraph('Plan changes', 'line', q);   
+    };
     </script>
   </body>
 </html>
