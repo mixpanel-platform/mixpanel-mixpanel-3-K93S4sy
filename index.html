@@ -19,12 +19,13 @@
     </div>
     <div id="table"></div>
     <script>
-      var intervals = 60;
+      var intervals = 24;
       var unit = "month";
       
       var startDate = moment().subtract(intervals, unit);
       var endDate = moment();
       var globalParams = {
+        unit: unit,
         from: startDate,
         to: endDate
       }
@@ -47,7 +48,8 @@
         data: {
           unit: unit,
           from: startDate.format('YYYY-MM-DD'),
-          to: endDate.format('YYYY-MM-DD')
+          to: endDate.format('YYYY-MM-DD'),
+          value: 'dollar_amount'
         },
         xhrFields: {
           withCredentials: true
