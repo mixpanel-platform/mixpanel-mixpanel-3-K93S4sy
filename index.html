@@ -5,46 +5,56 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.mxpnl.com/libs/mixpanel-platform/css/reset.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.css">
     <script src="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.js"></script>
+    <style type="text/css">
+      div.chart {
+        margin-top: 50px;
+      }
+    </style>
   </head>
   <body class="mixpanel-platform-body">
     <div class="mixpanel-platform-section">
-      <div id="eventSelect" style="float: left;"></div>
-      <div id="by" class="mixpanel-platform-label" style="margin-left: 10px; display: none;">by</div>
       <div id="propSelect" style="float: left;"></div>
       <div id="dateSelect" style="float: right;"></div>
       <div style="clear: both;"></div>
-      <div id="graph"></div>
     </div>
     <div id="table"></div>
     <script>
-      var eventSelect = $('#eventSelect').MPEventSelect();
-      var propSelect  = $('#propSelect').MPPropertySelect();
-      var dateSelect  = $('#dateSelect').MPDatepicker();
-      var eventGraph  = $('#graph').MPChart({chartType: 'line'});
-      var eventTable  = $('#table').MPTable({
-        showPercentages: true,
-        firstColHeader: 'Event'
-      });
-
-      var runQuery = function() {
-        var eventName = eventSelect.MPEventSelect('value'),
-            propName  = propSelect.MPPropertySelect('value'),
-            dateRange = dateSelect.MPDatepicker('value');
-
-        if (eventName) {
-          MP.api.segment(eventName, propName, dateRange).done(function(results) {
-            eventGraph.MPChart('setData', results);
-            eventTable.MPTable('setData', results);
+      var intervals = 60;
+      var unit = "month";
+      
+      var startDate = moment().subtract(intervals, unit);
+      var endDate = moment();
+      var globalParams = {
+        from: startDate,
+        to: endDate
+      }
+      
+      var addGraph = function(name, type, query) {
+          var $wrapper = $('<div class="chart"><div class="header"></div><div class="body"></div></chart>').appendTo($('.mixpanel-platform-body'));
+          var $header = $wrapper.find('.header').text(name + " last " + intervals + " " + unit + "s");
+          var $chart = $wrapper.find('.body').MPChart({chartType: type})
+          query.done(function(results) {
+            $chart.MPChart('setData', results);
           });
+      }
+      
+      addGraph('# Customer Sign-ups', 'line', MP.api.segment('$signup', _.extend({}, globalParams)));
+      addGraph('Active users', 'line', MP.api.segment('Viewed report', _.extend({type: 'unique'}, globalParams)));
+      
+      var q = $.ajax({
+        type: 'get',
+        url: 'https://josh.dev.mixpanel.org/admin/internal/api/query',
+        data: {
+          unit: unit,
+          from: startDate.format('YYYY-MM-DD'),
+          to: endDate.format('YYYY-MM-DD')
+        },
+        xhrFields: {
+          withCredentials: true
         }
-      };
-      eventSelect.on('change', function(e, eventName) {
-        propSelect.MPPropertySelect('setEvent', eventName);
-        $("#by").show();
-        runQuery();
       });
-      propSelect.on('change', runQuery);
-      dateSelect.on('change', runQuery);
+      addGraph('New paid users', 'line', q);
+      
     </script>
   </body>
 </html>
