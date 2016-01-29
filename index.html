@@ -199,7 +199,7 @@
           withCredentials: true
         }
       });
-      addGraph('New paid users', 'A "new paid user" is calculated by the "effective" date of their first non-free plan choice' 'line', q);
+      addGraph('New paid users', 'A "new paid user" is calculated by the "effective" date of their first non-free plan choice', 'line', q);
 
       var q = $.ajax({
         type: 'get',
@@ -213,7 +213,7 @@
           withCredentials: true
         }
       });
-      addGraph('Plan changes', 'line', q);   
+      addGraph('Plan changes', 'Plan changes are based on the "billing_planchoice" table. An upgrade happens on the effective date of a plan that costs more than the previous plan only if the previous plan was also a paid plan. A downgrade happens on the effective date of a plan choice that costs less than previous plan only if the new plan is not free. Churn is any time a user downgrades from a paid plan to a free plan.', 'line', q);   
     };
     </script>
   </body>
