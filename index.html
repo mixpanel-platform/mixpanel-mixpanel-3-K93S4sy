@@ -172,7 +172,7 @@
       var addGraph = function(name, tooltip, type, query) {
           var $wrapper= $($('#chartTpl').html()).appendTo($('.charts'));
           var $title = $wrapper.find('.header .title').text(name + " last " + intervals + " " + unit + "s");
-          var $title = $wrapper.find('.header .tooltip').text(tooltip);
+          var $title = $wrapper.find('.header .tooltip').html(tooltip);
           var $chart = $wrapper.find('.body').MPChart({chartType: type})
           query.done(function(results) {
             $chart.MPChart('setData', results);
@@ -213,7 +213,7 @@
           withCredentials: true
         }
       });
-      addGraph('Plan changes', 'Plan changes are based on the "billing_planchoice" table. An upgrade happens on the effective date of a plan that costs more than the previous plan only if the previous plan was also a paid plan. A downgrade happens on the effective date of a plan choice that costs less than previous plan only if the new plan is not free. Churn is any time a user downgrades from a paid plan to a free plan.', 'line', q);   
+      addGraph('Plan changes', 'Plan changes are based on the "billing_planchoice" table. <br /><br />Upgrades: An upgrade happens on the effective date of a plan that costs more than the previous plan only if the previous plan was also a paid plan. <br /><br />Downgrades: A downgrade happens on the effective date of a plan choice that costs less than previous plan only if the new plan is not free. <br /><br />Churns: Churn is any time a user downgrades from a paid plan to a free plan.', 'line', q);   
     };
     </script>
   </body>
