@@ -132,7 +132,7 @@
         <div class="header">
           <div class="title"></div>
           <div class="help-tip">
-      			<p class="help-text"></p>
+      			<p class="tooltip"></p>
       		</div>
         </div>
         <div class="body"></div>
@@ -169,17 +169,19 @@
         to: endDate
       }
       
-      var addGraph = function(name, type, query) {
+      var addGraph = function(name, tooltip, type, query) {
           var $wrapper= $($('#chartTpl').html()).appendTo($('.charts'));
           var $title = $wrapper.find('.header .title').text(name + " last " + intervals + " " + unit + "s");
+          var $title = $wrapper.find('.header .tooltip').text(tooltip);
           var $chart = $wrapper.find('.body').MPChart({chartType: type})
           query.done(function(results) {
             $chart.MPChart('setData', results);
           });
       }
       
-      addGraph('# Customer Sign-ups', 'line', MP.api.segment('$signup', _.extend({}, globalParams)));
-      addGraph('Active users', 'line', MP.api.segment('Viewed report', _.extend({
+      addGraph('# Customer Sign-ups', 'The number of "$signup" events', 'line', MP.api.segment('$signup', _.extend({}, globalParams)));
+      
+      addGraph('Active users', 'Unique users who have viewed at least one report and currently have more than 500 tallies', 'line', MP.api.segment('Viewed report', _.extend({
         type: 'unique', 
         where: 'user["Current tally"] > 500'
       }, globalParams)));
@@ -197,7 +199,7 @@
           withCredentials: true
         }
       });
-      addGraph('New paid users', 'line', q);
+      addGraph('New paid users', 'A "new paid user" is calculated by the "effective" date of their first non-free plan choice' 'line', q);
 
       var q = $.ajax({
         type: 'get',
