@@ -199,7 +199,7 @@
           withCredentials: true
         }
       });
-      addGraph('New paid users', 'A "new paid user" is calculated by the "effective" date of their first non-free plan choice', 'line', q);
+      addGraph('New paid users', 'A "new paid user" is when a user makes their first non-free plan choice. The actual date is based on the "effective" date of that plan choice.', 'line', q);
 
       var q = $.ajax({
         type: 'get',
@@ -213,7 +213,7 @@
           withCredentials: true
         }
       });
-      addGraph('Plan changes', 'Upgrades: An upgrade happens on the effective date of a plan that costs more than the previous plan choice only if the previous plan choice was also a paid plan. <br /><br />Downgrades: A downgrade happens on the effective date of a plan choice that costs less than previous plan only if the new plan is not free. <br /><br />Churns: Churn is any time a user downgrades from a paid plan to a free plan. <br /><br />The data comes directly from the "billing_planchoice" table in MySQL.', 'line', q);   
+      addGraph('Plan changes', 'Upgrades: An upgrade happens when a user who is on a paid plan chooses a new plan that costs more. <br /><br />Downgrades: A downgrade happens when a user choices a new plan that is cheaper (but not free).<br /><br />Churns: Churn is any time a user downgrades from a paid plan to a free plan. <br /><br />The data comes directly from the "billing_planchoice" table in MySQL.', 'line', q);   
     };
     </script>
   </body>
