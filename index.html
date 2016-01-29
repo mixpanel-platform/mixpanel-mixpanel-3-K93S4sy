@@ -182,7 +182,7 @@
       
       addGraph('# Customer Sign-ups', 'The number of "$signup" events', 'line', MP.api.segment('$signup', _.extend({}, globalParams)));
       
-      addGraph('Active users', 'Unique users who have viewed at least one report and currently have more than 500 tallies', 'line', MP.api.segment('Viewed report', _.extend({
+      addGraph('Active users', 'Users who viewed at least one report and currently have more than 500 tallies', 'line', MP.api.segment('Viewed report', _.extend({
         type: 'unique', 
         where: 'user["Current tally"] > 500'
       }, globalParams)));
