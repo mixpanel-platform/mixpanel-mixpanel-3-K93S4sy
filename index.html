@@ -133,7 +133,6 @@
       	100% { opacity:100%; }
       }
 
-     
     </style>
   </head>
   <body class="mixpanel-platform-body">
@@ -190,16 +189,18 @@
       }
       
       var addGraph = function(name, tooltip, type, query) {
-          var $wrapper= $($('#chartTpl').html()).appendTo($('.charts'));
-          var $title = $wrapper.find('.header .title').text(name + " last " + intervals + " " + unit + "s");
-          var $title = $wrapper.find('.header .tooltip').html(tooltip);
-          var $chart = $wrapper.find('.body').MPChart({chartType: type})
-          query.done(function(results) {
-            $chart.MPChart('setData', results);
-          });
+        var $wrapper= $($('#chartTpl').html()).appendTo($('.charts'));
+        var $title = $wrapper.find('.header .title').text(name + " last " + intervals + " " + unit + "s");
+        var $title = $wrapper.find('.header .tooltip').html(tooltip);
+        var $chart = $wrapper.find('.body').MPChart({chartType: type})
+        query.done(function(results) {
+          $chart.MPChart('setData', results);
+        });
       }
       
-      addGraph('# Customer Sign-ups', 'The number of "$signup" events', 'line', MP.api.segment('$signup', _.extend({}, globalParams)));
+      addGraph('New sign-ups', 'The number of "$signup" events excluding users with "@mixpanel.com" email addresses', 'line', MP.api.segment('$signup', _.extend({
+        where: 'not "@mixpanel.com" in user["$email"]'
+      }, globalParams)));
       
       addGraph('Active users', 'Unique users who have viewed at least one report and currently have more than 500 tallies', 'line', MP.api.segment('Viewed report', _.extend({
         type: 'unique', 
