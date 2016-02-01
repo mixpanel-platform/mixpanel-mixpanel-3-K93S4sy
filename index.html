@@ -10,6 +10,22 @@
       * {
         color: #737c93;
       }
+      
+      input[type="text"] {
+        background-color: #F5F6F9;
+        border-radius: 3px;
+        border: 1px solid #BDC7D2;
+        color: #747d94;
+        display: block;
+        font-family: "helvetica neue",helvetica;
+        font-size: 13px;
+        font-weight: bold;
+        height: 29px;
+        margin-right: 5px;
+        text-align: center;
+        width: 36px;
+      }
+      
       div.chart {
         margin-top: 50px;
         position: relative;
@@ -124,6 +140,7 @@
     <div class="mixpanel-platform-section">
       <div class="title" style="float: left;">Product metrics</div>
       <div class="unitSelect" style="float: right;"></div>
+      <input type="text" class="intervalsInput" style="float: right" value="6" />
       <div style="clear: both;"></div>
     </div>
     
@@ -144,24 +161,24 @@
     $(document).ready(function() {
       $('.unitSelect').MPSelect({
         items: [
-          {label: 'Day', value: 'day'},
-          {label: 'Week', value: 'week'},
-          {label: 'Month', value: 'month'}
+          {label: 'Day(s)', value: 'day'},
+          {label: 'Week(s)', value: 'week'},
+          {label: 'Month(s)', value: 'month'}
         ]
       })
       .on('change', function(e, selection) {
-        renderCharts(selection)
+        renderCharts()
       });
       
-      renderCharts('month');
+      renderCharts('day');
     });
     
   
-    var renderCharts = function(unit) {
+    var renderCharts = function() {
       $('.charts').html('');
       
-      var intervals = 30;
-      
+      var unit = $('.unitSelect').val();
+      var intervals = $('.intervalsInput').val();
       var startDate = moment().subtract(intervals, unit);
       var endDate = moment();
       var globalParams = {
@@ -182,7 +199,7 @@
       
       addGraph('# Customer Sign-ups', 'The number of "$signup" events', 'line', MP.api.segment('$signup', _.extend({}, globalParams)));
       
-      addGraph('Active users', 'Users who viewed at least one report and currently have more than 500 tallies', 'line', MP.api.segment('Viewed report', _.extend({
+      addGraph('Active users', 'Unique users who have viewed at least one report and currently have more than 500 tallies', 'line', MP.api.segment('Viewed report', _.extend({
         type: 'unique', 
         where: 'user["Current tally"] > 500'
       }, globalParams)));
