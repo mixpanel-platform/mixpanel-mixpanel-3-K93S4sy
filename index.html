@@ -143,18 +143,41 @@
       <div style="clear: both;"></div>
     </div>
     
-    <div class="charts"></div>
-    <script type="text/template" id="chartTpl">
-      <div class="chart">
+    <div class="charts">
+      <div class="chart new-users">
         <div class="header">
-          <div class="title"></div>
+          <div class="title">New signups</div>
           <div class="help-tip">
-      			<p class="tooltip"></p>
+      			<p class="tooltip">The number of "$signup" events excluding users with "@mixpanel.com" email addresses</p>
       		</div>
         </div>
         <div class="body"></div>
       </div>
-    </script>
+      <div class="chart active-users">
+        <div class="header">
+          <div class="title">Active users</div>
+          <div class="help-tip">
+      			<p class="tooltip">Unique users who have viewed at least one report and currently have more than 500 tallies</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
+      <div class="chart plan-changes">
+        <div class="header">
+          <div class="title">Plan changes</div>
+          <div class="help-tip">
+      			<p class="tooltip">
+      			  New paids: A "new paid user" is when a user makes their first non-free plan choice.<br /> <br />
+      			  Upgrades: An upgrade happens when a user who is on a paid plan chooses a new plan that costs more.<br /><br />
+      			  Downgrades: A downgrade happens when a user choices a new plan that is cheaper (but not free).<br /><br />
+      			  Churns: Churn is any time a user downgrades from a paid plan to a free plan. <br /><br />
+      			  The data comes directly from the "billing_planchoice" table in MySQL.</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
+    </div>
+   
     <script>
     
     $(document).ready(function() {
@@ -165,18 +188,15 @@
           {label: 'Month(s)', value: 'month'}
         ]
       })
-      .on('change', function(e, selection) {
-        renderCharts()
-      });
-      
-      $('.intervalsInput').on('change', renderCharts)
-      
-      renderCharts('day');
+        .val('month')
+        .on('change', runQuery);
+        
+      $('.intervalsInput').on('change', runQuery)
+      $('.charts .chart .body').MPChart({chartType: type})
+      runQuery();
     });
-    
   
-    var renderCharts = function() {
-      $('.charts').html('');
+    var runQuery = function() {
       
       var unit = $('.unitSelect').val();
       var intervals = $('.intervalsInput').val();
@@ -188,38 +208,38 @@
         to: endDate
       }
       
-      var addGraph = function(name, tooltip, type, query) {
-        var $wrapper= $($('#chartTpl').html()).appendTo($('.charts'));
-        var $title = $wrapper.find('.header .title').text(name + " last " + intervals + " " + unit + "s");
-        var $title = $wrapper.find('.header .tooltip').html(tooltip);
-        var $chart = $wrapper.find('.body').MPChart({chartType: type})
-        query.done(function(results) {
-          $chart.MPChart('setData', results);
+      // signups query
+      MP.api.segment('$signup', _.extend({where: 'not "@mixpanel.com" in user["$email"]'}, globalParams))
+        .done(function(results) {
+          $('.chart.new-users .body').MPChart('setData', results);
         });
-      }
-      
-      addGraph('New sign-ups', 'The number of "$signup" events excluding users with "@mixpanel.com" email addresses', 'line', MP.api.segment('$signup', _.extend({
-        where: 'not "@mixpanel.com" in user["$email"]'
-      }, globalParams)));
-      
-      addGraph('Active users', 'Unique users who have viewed at least one report and currently have more than 500 tallies', 'line', MP.api.segment('Viewed report', _.extend({
+    
+      // active users query
+      MP.api.segment('Viewed report', _.extend({
         type: 'unique', 
         where: 'user["Current tally"] > 500'
-      }, globalParams)));
+      }, globalParams)))
+        .done(function(results) {
+          $('.chart.active-users .body').MPChart('setData', results);
+        });
       
-      var q = $.ajax({
+      // plan changes query
+      $.ajax({
         type: 'get',
-        url: 'https://mixpanel.com/admin/internal/api/plan_changes',
+        url: 'https://josh.dev.mixpanel.org/admin/internal/api/plan_changes',
         data: {
           unit: unit,
           from: startDate.format('YYYY-MM-DD'),
           to: endDate.format('YYYY-MM-DD'),
+          query_type: $('.plan-change-query-type').val()
         },
         xhrFields: {
           withCredentials: true
         }
-      });
-      addGraph('Plan changes', 'New paids: A "new paid user" is when a user makes their first non-free plan choice. <br /> <br />Upgrades: An upgrade happens when a user who is on a paid plan chooses a new plan that costs more. <br /><br />Downgrades: A downgrade happens when a user choices a new plan that is cheaper (but not free).<br /><br />Churns: Churn is any time a user downgrades from a paid plan to a free plan. <br /><br />The data comes directly from the "billing_planchoice" table in MySQL.', 'line', q);   
+      })
+        .done(function(results) {
+          $('.chart.plan-changes .body').MPChart('setData', results);
+        });
     };
     </script>
   </body>
