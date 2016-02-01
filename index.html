@@ -137,8 +137,8 @@
   <body class="mixpanel-platform-body">
     <div class="mixpanel-platform-section">
       <div class="title" style="float: left;">Product metrics</div>
-      <div class="unitSelect" style="float: right;"></div>
-      <input type="text" class="intervalsInput" style="float: right" value="6" />
+      <div class="unit-select" style="float: right;"></div>
+      <input type="text" class="intervals-input" style="float: right" value="6" />
       <div style="clear: both;"></div>
     </div>
     
@@ -185,7 +185,7 @@
     <script>
     
     $(document).ready(function() {
-      $('.unitSelect').MPSelect({
+      $('.unit-select').MPSelect({
         items: [
           {label: 'Day(s)', value: 'day'},
           {label: 'Week(s)', value: 'week'},
@@ -195,15 +195,24 @@
         .val('month')
         .on('change', runQuery);
         
-      $('.intervalsInput').on('change', runQuery)
+      $('.intervals-input').on('change', runQuery);
+      
+      $('.plan-changes .query-type-select').MPSelect({
+        items: [
+          {label: 'count', value: 'count'},
+          {label: '$ amount', value: 'value'},
+        ]
+      })
+        .on('change', runQuery);
+        
       $('.charts .chart .body').MPChart({chartType: 'line'})
       runQuery();
     });
   
     var runQuery = function() {
       
-      var unit = $('.unitSelect').val();
-      var intervals = $('.intervalsInput').val();
+      var unit = $('.unit-select').val();
+      var intervals = $('.intervals-input').val();
       var startDate = moment().subtract(intervals, unit);
       var endDate = moment();
       var globalParams = {
@@ -235,7 +244,7 @@
           unit: unit,
           from: startDate.format('YYYY-MM-DD'),
           to: endDate.format('YYYY-MM-DD'),
-          query_type: $('.plan-changes .query-type').val()
+          query_type: $('.plan-changes .query-type-select').val()
         },
         xhrFields: {
           withCredentials: true
