@@ -161,11 +161,23 @@
         </div>
         <div class="body"></div>
       </div>
-      <div class="chart plan-changes">
+      <div class="chart plan-changes-count">
         <div class="header">
-          <div class="title">Plan changes by 
-            <div class="query-type-select" style="display: inline-block"></div>
-          </div>
+          <div class="title">Plan changes by count</div>
+          <div class="help-tip">
+      			<p class="tooltip">
+      			  New paids: A "new paid user" is when a user makes their first non-free plan choice.<br /> <br />
+      			  Upgrades: An upgrade happens when a user who is on a paid plan chooses a new plan that costs more.<br /><br />
+      			  Downgrades: A downgrade happens when a user choices a new plan that is cheaper (but not free).<br /><br />
+      			  Churns: Churn is any time a user downgrades from a paid plan to a free plan. <br /><br />
+      			  The data comes directly from the "billing_planchoice" table in MySQL.</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
+      <div class="chart plan-changes-value">
+        <div class="header">
+          <div class="title">Plan changes by $ amount</div>
           <div class="help-tip">
       			<p class="tooltip">
       			  New paids: A "new paid user" is when a user makes their first non-free plan choice.<br /> <br />
@@ -233,7 +245,7 @@
           $('.chart.active-users .body').MPChart('setData', results);
         });
       
-      // plan changes query
+      // plan changes query (by count)
       $.ajax({
         type: 'get',
         url: 'https://mixpanel.com/admin/internal/api/plan_changes',
@@ -241,14 +253,32 @@
           unit: unit,
           from: startDate.format('YYYY-MM-DD'),
           to: endDate.format('YYYY-MM-DD'),
-          query_type: $('.plan-changes .query-type-select').val()
+          query_type: 'count'
         },
         xhrFields: {
           withCredentials: true
         }
       })
         .done(function(results) {
-          $('.chart.plan-changes .body').MPChart('setData', results);
+          $('.chart.plan-changes-count .body').MPChart('setData', results);
+        });
+        
+      // plan changes query (by $ amount)
+      $.ajax({
+        type: 'get',
+        url: 'https://mixpanel.com/admin/internal/api/plan_changes',
+        data: {
+          unit: unit,
+          from: startDate.format('YYYY-MM-DD'),
+          to: endDate.format('YYYY-MM-DD'),
+          query_type: 'value'
+        },
+        xhrFields: {
+          withCredentials: true
+        }
+      })
+        .done(function(results) {
+          $('.chart.plan-changes-value .body').MPChart('setData', results);
         });
     };
     </script>
