@@ -280,6 +280,18 @@
         .done(function(results) {
           $('.chart.plan-changes-value .body').MPChart('setData', results);
         });
+        
+      // integrations
+      MP.api.query('/api/2.0/engage/', {
+        where: 'defined(properties["Projects Owned"]) and defined(properties["first integration date"]) and properties["first integration date"] >= "' + startDate.format('YYYY-MM-DD') + '"'
+        
+      })
+        .done(function(resp) { 
+          console.log(resp);
+          _.each(resp.results, function(profile) {
+            
+          });
+        });
     };
     </script>
   </body>
