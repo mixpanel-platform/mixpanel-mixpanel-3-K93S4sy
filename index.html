@@ -301,9 +301,9 @@
         .done(function(resp) { 
           data = {};
           _.each(resp.results, function(segmentsAndCounts, date) {
-            data[date] = data[date] || {};
             _.each(segmentsAndCounts, function(count, seg) {
-              data[date][seg] = count
+              data[seg] = data[seg] || {};
+              data[seg][date] = count;
             })
           })
           debugger;
