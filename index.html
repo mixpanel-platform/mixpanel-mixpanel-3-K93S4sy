@@ -300,12 +300,13 @@
       })
         .done(function(resp) { 
           data = {};
-          _.each(resp.results, function(date, segmentsAndCounts) {
+          _.each(resp.results, function(segmentsAndCounts, date) {
             data[date] = data[date] || {};
-            _.each(segmentsAndCounts, function(seg, count) {
+            _.each(segmentsAndCounts, function(count, seg) {
               data[date][seg] = count
             })
           })
+          debugger;
           $('.chart.integrations .body').MPChart('setData', data);
         });
     };
