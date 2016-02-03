@@ -299,7 +299,7 @@
         x_unit: unit
       })
         .done(function(resp) { 
-          $('.chart.integrations .body').MPChart('setData', resp);
+          $('.chart.integrations .body').MPChart('setData', resp.results);
         });
     };
     </script>
