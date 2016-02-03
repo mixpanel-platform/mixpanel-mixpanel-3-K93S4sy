@@ -135,6 +135,21 @@
       
       
       /* bootstrap nav */
+      a {
+        color: #337ab7;
+        text-decoration: none;
+      }
+      a:hover,
+      a:focus {
+        color: #23527c;
+        text-decoration: underline;
+      }
+      a:focus {
+        outline: thin dotted;
+        outline: 5px auto -webkit-focus-ring-color;
+        outline-offset: -2px;
+      }
+
       .nav {
         margin-bottom: 0;
         padding-left: 0;
@@ -338,49 +353,19 @@
       .nav:after {
         clear: both;
       }
-      .center-block {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-      }
-      .pull-right {
-        float: right !important;
-      }
-      .pull-left {
-        float: left !important;
-      }
-      .hide {
-        display: none !important;
-      }
-      .show {
-        display: block !important;
-      }
-      .invisible {
-        visibility: hidden;
-      }
-      .text-hide {
-        font: 0/0 a;
-        color: transparent;
-        text-shadow: none;
-        background-color: transparent;
-        border: 0;
-      }
-      .hidden {
-        display: none !important;
-      }
-      .affix {
-        position: fixed;
-      }
-
+      
     </style>
   </head>
   <body class="mixpanel-platform-body">
   
-    <ul class="nav nav-tabs" style="float: left">
-      <li role="presentation" class="active"><a href="#">General/Business</a></li>
-      <li role="presentation"><a href="#">Core product</a></li>
-      <li role="presentation"><a href="#">People/notifications</a></li>
-    </ul>
+    <div style="float: left">
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">General/Business</a></li>
+        <li role="presentation"><a href="#">Core product</a></li>
+        <li role="presentation"><a href="#">People/notifications</a></li>
+      </ul>
+    </div>
+   
     <div class="unit-select" style="float: right;"></div>
     <input type="text" class="intervals-input" style="float: right" value=24 />
     <div style="clear: both;"></div>
