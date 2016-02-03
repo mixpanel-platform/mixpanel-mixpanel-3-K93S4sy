@@ -256,41 +256,23 @@
         .done(function(results) {
           $('.chart.active-users .body').MPChart('setData', results);
         });
-      
-      // plan changes query (by count)
-      $.ajax({
-        type: 'get',
-        url: 'https://josh.dev.mixpanel.org/admin/internal/api/plan_changes',
-        data: {
-          unit: unit,
-          from: startDate.format('YYYY-MM-DD'),
-          to: endDate.format('YYYY-MM-DD'),
-          query_type: 'count'
-        },
-        xhrFields: {
-          withCredentials: true
-        }
-      })
-        .done(function(results) {
-          $('.chart.plan-changes-count .body').MPChart('setData', results);
-        });
         
-      // plan changes query (by $ amount)
+      // account changes (new, upsells, downgrades, churns)
       $.ajax({
         type: 'get',
         url: 'https://josh.dev.mixpanel.org/admin/internal/api/plan_changes',
         data: {
           unit: unit,
           from: startDate.format('YYYY-MM-DD'),
-          to: endDate.format('YYYY-MM-DD'),
-          query_type: 'value'
+          to: endDate.format('YYYY-MM-DD')
         },
         xhrFields: {
           withCredentials: true
         }
       })
         .done(function(results) {
-          $('.chart.plan-changes-value .body').MPChart('setData', results);
+          $('.chart.plan-changes-count .body').MPChart('setData', results.counts);
+          $('.chart.plan-changes-value .body').MPChart('setData', results.values);
         });
         
       // integrations
