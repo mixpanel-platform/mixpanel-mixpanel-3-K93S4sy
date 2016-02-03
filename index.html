@@ -294,8 +294,8 @@
       MP.api.query('/api/2.0/engage/analytics', {
         x_segment: 'first integration date',
         x_type: 'datetime',
-        from_date: startDate,
-        to_date: endDate,
+        from_date: startDate.format('YYYY-MM-DD'),
+        to_date: endDate.format('YYYY-MM-DD'),
         x_unit: unit
       })
         .done(function(resp) { 
