@@ -296,7 +296,8 @@
         x_type: 'datetime',
         from_date: startDate.format('YYYY-MM-DD'),
         to_date: endDate.format('YYYY-MM-DD'),
-        x_unit: unit
+        x_unit: unit,
+        where: 'user["Current tally"] > 500'
       })
         .done(function(resp) { 
           data = {};
@@ -306,7 +307,6 @@
               data[seg][date] = count;
             })
           })
-          debugger;
           $('.chart.integrations .body').MPChart('setData', data);
         });
     };
