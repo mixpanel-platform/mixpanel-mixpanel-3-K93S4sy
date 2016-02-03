@@ -12,7 +12,7 @@
       }
       
       .mixpanel-platform-body {
-        background-color: 10px;
+        background-color: #fff;
       }
       
       .top {
@@ -20,8 +20,12 @@
       }
       
       .top .controls {
-        position: asbolute;
+        position: absolute;
         right: 10px;
+      }
+      
+      .top .controls .unit-select, .top .controls input {
+        display: inline-block;
       }
       
       input[type="text"] {
@@ -377,8 +381,8 @@
           <li role="presentation"><a href="#">People/notifications</a></li>
         </ul>
         <div class="controls">
-          <div class="unit-select"></div>
           <input type="text" class="intervals-input" value=24 />
+          <div class="unit-select"></div>
         </div>
     </div>
      
