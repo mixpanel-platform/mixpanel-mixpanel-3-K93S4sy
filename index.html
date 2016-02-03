@@ -297,7 +297,7 @@
         from_date: startDate.format('YYYY-MM-DD'),
         to_date: endDate.format('YYYY-MM-DD'),
         x_unit: unit,
-        where: 'user["Current tally"] > 500'
+        where: 'properties["Current tally"] > 0'
       })
         .done(function(resp) { 
           data = {};
