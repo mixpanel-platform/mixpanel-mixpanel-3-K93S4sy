@@ -299,7 +299,14 @@
         x_unit: unit
       })
         .done(function(resp) { 
-          $('.chart.integrations .body').MPChart('setData', resp.results);
+          data = {};
+          _.each(resp.results, function(date, segmentsAndCounts) {
+            data[date] = data[date] || {};
+            _.each(segmentsAndCounts, function(seg, count) {
+              data[date][seg] = count
+            })
+          })
+          $('.chart.integrations .body').MPChart('setData', data);
         });
     };
     </script>
