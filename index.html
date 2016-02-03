@@ -11,6 +11,10 @@
         color: #737c93;
       }
       
+      .mixpanel-platform-body {
+        background-color: 10px;
+      }
+      
       input[type="text"] {
         background-color: #F5F6F9;
         border-radius: 3px;
@@ -358,16 +362,15 @@
   </head>
   <body class="mixpanel-platform-body">
     <div class="top">
-      <div style="float: left">
         <ul class="nav nav-tabs">
           <li role="presentation" class="active"><a href="#">General/Business</a></li>
           <li role="presentation"><a href="#">Core product</a></li>
           <li role="presentation"><a href="#">People/notifications</a></li>
         </ul>
-      </div>
-      <div class="unit-select" style="float: right;"></div>
-      <input type="text" class="intervals-input" style="float: right" value=24 />
-      <div style="clear: both;"></div>
+        <div class="controls">
+          <div class="unit-select"></div>
+          <input type="text" class="intervals-input" value=24 />
+        </div>
     </div>
      
     <div class="charts">
