@@ -8,79 +8,68 @@
   </head>
   <body class="mixpanel-platform-body">
     <div id="app"></div>
-    <div class="top">
-        <ul class="nav nav-tabs">
-          <li role="presentation" class="active"><a href="#">General/Business</a></li>
-          <li role="presentation"><a href="#">Core product</a></li>
-          <li role="presentation"><a href="#">People/notifications</a></li>
-        </ul>
-        <div class="controls">
-          <input type="text" class="intervals-input" value=24 />
-          <div class="unit-select"></div>
-        </div>
-    </div>
-     
-    <div class="charts">
-      <div class="chart new-users">
-        <div class="header">
-          <div class="title">New signups</div>
-          <div class="help-tip">
-      			<p class="tooltip">The number of "$signup" events excluding users with "@mixpanel.com" email addresses</p>
-      		</div>
-        </div>
-        <div class="body"></div>
-      </div>
-      
-      <div class="chart integrations">
-        <div class="header">
-          <div class="title">New integrations</div>
-          <div class="help-tip">
-      			<p class="tooltip">The total count of new integrations using the "first integration date" property on user profiles where their "Current tally" is greater than 0.</p>
-      		</div>
-        </div>
-        <div class="body"></div>
-      </div>
-      
-      <div class="chart active-users">
-        <div class="header">
-          <div class="title">Active users</div>
-          <div class="help-tip">
-      			<p class="tooltip">Unique users who have viewed at least one report and currently have more than 500 tallies</p>
-      		</div>
-        </div>
-        <div class="body"></div>
-      </div>
-      <div class="chart plan-changes-count">
-        <div class="header">
-          <div class="title">Number of plan changes (monthly only)</div>
-          <div class="help-tip">
-      			<p class="tooltip">
-      			  New paids: A "new paid user" is when a user makes their first non-free plan choice.<br /> <br />
-      			  Upgrades: An upgrade happens when a user who is on a paid plan chooses a new plan that costs more.<br /><br />
-      			  Downgrades: A downgrade happens when a user choices a new plan that is cheaper (but not free).<br /><br />
-      			  Churns: Churn is any time a user downgrades from a paid plan to a free plan. <br /><br />
-      			  The data comes directly from the "billing_planchoice" table in MySQL.
-    			  </p>
-      		</div>
-        </div>
-        <div class="body"></div>
-      </div>
-      <div class="chart plan-changes-value">
-        <div class="header">
-          <div class="title">$ amount of plan changes (monthly only)</div>
-          <div class="help-tip">
-      			<p class="tooltip">
-      			  New paids: A "new paid user" is when a user makes their first non-free plan choice.<br /> <br />
-      			  Upgrades: An upgrade happens when a user who is on a paid plan chooses a new plan that costs more.<br /><br />
-      			  Downgrades: A downgrade happens when a user choices a new plan that is cheaper (but not free).<br /><br />
-      			  Churns: Churn is any time a user downgrades from a paid plan to a free plan. <br /><br />
-      			  The data comes directly from the "billing_planchoice" table in MySQL.
-    			  </p>
-      		</div>
-        </div>
-        <div class="body"></div>
-      </div>
-    </div>
+
+    <!--<div class="charts">-->
+      <!--<div class="chart new-users">-->
+        <!--<div class="header">-->
+          <!--<div class="title">New signups</div>-->
+          <!--<div class="help-tip">-->
+      			<!--<p class="tooltip">The number of "$signup" events excluding users with "@mixpanel.com" email addresses</p>-->
+      		<!--</div>-->
+        <!--</div>-->
+        <!--<div class="body"></div>-->
+      <!--</div>-->
+      <!---->
+      <!--<div class="chart integrations">-->
+        <!--<div class="header">-->
+          <!--<div class="title">New integrations</div>-->
+          <!--<div class="help-tip">-->
+      			<!--<p class="tooltip">The total count of new integrations using the "first integration date" property on user profiles where their "Current tally" is greater than 0.</p>-->
+      		<!--</div>-->
+        <!--</div>-->
+        <!--<div class="body"></div>-->
+      <!--</div>-->
+      <!---->
+      <!--<div class="chart active-users">-->
+        <!--<div class="header">-->
+          <!--<div class="title">Active users</div>-->
+          <!--<div class="help-tip">-->
+      			<!--<p class="tooltip">Unique users who have viewed at least one report and currently have more than 500 tallies</p>-->
+      		<!--</div>-->
+        <!--</div>-->
+        <!--<div class="body"></div>-->
+      <!--</div>-->
+      <!--<div class="chart plan-changes-count">-->
+        <!--<div class="header">-->
+          <!--<div class="title">Number of plan changes (monthly only)</div>-->
+          <!--<div class="help-tip">-->
+      			<!--<p class="tooltip">-->
+      			  <!--New paids: A "new paid user" is when a user makes their first non-free plan choice.<br /> <br />-->
+      			  <!--Upgrades: An upgrade happens when a user who is on a paid plan chooses a new plan that costs more.<br /><br />-->
+      			  <!--Downgrades: A downgrade happens when a user choices a new plan that is cheaper (but not free).<br /><br />-->
+      			  <!--Churns: Churn is any time a user downgrades from a paid plan to a free plan. <br /><br />-->
+      			  <!--The data comes directly from the "billing_planchoice" table in MySQL.-->
+    			  <!--</p>-->
+      		<!--</div>-->
+        <!--</div>-->
+        <!--<div class="body"></div>-->
+      <!--</div>-->
+      <!--<div class="chart plan-changes-value">-->
+        <!--<div class="header">-->
+          <!--<div class="title">$ amount of plan changes (monthly only)</div>-->
+          <!--<div class="help-tip">-->
+      			<!--<p class="tooltip">-->
+      			  <!--New paids: A "new paid user" is when a user makes their first non-free plan choice.<br /> <br />-->
+      			  <!--Upgrades: An upgrade happens when a user who is on a paid plan chooses a new plan that costs more.<br /><br />-->
+      			  <!--Downgrades: A downgrade happens when a user choices a new plan that is cheaper (but not free).<br /><br />-->
+      			  <!--Churns: Churn is any time a user downgrades from a paid plan to a free plan. <br /><br />-->
+      			  <!--The data comes directly from the "billing_planchoice" table in MySQL.-->
+    			  <!--</p>-->
+      		<!--</div>-->
+        <!--</div>-->
+        <!--<div class="body"></div>-->
+      <!--</div>-->
+    <!--</div>-->
    
     <script src="bundle.js" type="text/javascript"></script>
   </body>

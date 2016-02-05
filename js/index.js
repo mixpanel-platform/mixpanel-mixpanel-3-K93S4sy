@@ -1,17 +1,26 @@
 import Cycle from '@cycle/core'; 
-import {div, button, input, ul, li, a, makeDOMDriver} from '@cycle/dom';
+import {div, button, input, ul, li, a,p, h, makeDOMDriver} from '@cycle/dom';
 import {makeHTTPDriver} from '@cycle/http';
 import {Observable} from 'rx'
 import '../less/index.less'
 
+import './webComponents/mixpanel-chart'
+
+const PLAN_CHANGES_URL = 'http://josh.dev.mixpanel.org/admin/internal/api/plan_changes?unit=day&from=2015-01-01&to=2016-01-01';
+
+
 function intent(sources) {
     const interval$ = sources.DOM.select('.interval-input').events('change').map(evt => evt.target.value);
-    return interval$;
+    const planChanges$ = sources.HTTP
+        .filter(res$ => res$.request.url.indexOf(PLAN_CHANGES_URL) === 0)
+        .mergeAll()
+        .map(res => JSON.parse(res.body));
+    return {interval$, planChanges$};
 }
 
-function model(interval$) {
-    return interval$.map(interval => {
-        return {interval}
+function model({interval$, planChanges$}) {
+    return Observable.combineLatest(interval$, planChanges$, (interval, planChanges) => {
+        return {interval, planChanges}
     })
 }
 
@@ -31,33 +40,53 @@ function view(state$) {
                             a({href: '#'}, 'People'),
                         ]),
                     ]),
-                    div('Select')
+                    div('.controls', [
+                        input('.intervals-input', {type: 'text', value: 24}),
+                        div('.unit-select')
+                    ]),
                 ]),
-                input('.interval-input', {type: 'text', value: state.interval}),
-                div([state.interval]),
+                div('.charts', [
+                    div('.chart .new-users', [
+                        div('.header', [
+                            div('.title', 'New signups'),
+                            div('.help-tip', [
+                                p('.tooltip', 'The number of "$signup" events excluding users with "@mixpanel.com" email addresses')
+                            ])
+                        ]),
+                        div('.body', [
+                            h('mixpanel-chart', {data: state.planChanges})
+                        ])
+                    ])
+                ])
             ])
-        });
+        })
 }
 
 function main(sources) {
+
+    const planChanges$ = Observable.interval(1).take(1).map(() => {
+        return {
+            url: PLAN_CHANGES_URL,
+            method: 'GET',
+            withCredentials: true
+        };
+    });
+
+    const dom = view(model(intent(sources)));
+
     return {
-        DOM: view(model(intent(sources)))
+        DOM: dom,
+        HTTP: planChanges$
     }
 }
+
+
 
 Cycle.run(main, {
-  DOM: makeDOMDriver('#app'),
+    DOM: makeDOMDriver('#app'),
+    HTTP: makeHTTPDriver()
 });
 
-
-function Chart({DOM, props$}) {
-
-    return {
-        DOM: props$.map(props => div(props.title)),
-        props$: () => Observable.just({title: "Testing"})
-    }
-
-}
 
 /*
 import '../less/index.less'
