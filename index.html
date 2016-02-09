@@ -574,11 +574,10 @@
     
       $('.nav-tabs li').click(function(e) {
         $('.nav-tabs li').removeClass('active');
-        var $tab = $(e.target);
-        $tab.parent().addClass('active');
+        var $tab = $(e.target).parent();
+        $tab.addClass('active');
         $('.section').hide();
         $('.section.' + $tab.data('section')).show();
-        debugger;
         runQuery();
       });
       
