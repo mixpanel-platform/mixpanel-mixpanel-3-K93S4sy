@@ -574,6 +574,7 @@
       $('.nav-tabs li').click(function(e) {
         $('.nav-tabs li').removeClass('active');
         var $tab = $(e.target);
+        debugger;
         $tab.addClass('active');
         runQuery();
       });
