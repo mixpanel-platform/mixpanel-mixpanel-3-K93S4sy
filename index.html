@@ -459,7 +459,17 @@
         <div class="body"></div>
       </div>
     </div>
-    <div class="charts section core">core</div>
+    <div class="charts section core">
+      <div class="chart repoprt-views">
+        <div class="header">
+          <div class="title">Total report views by report type</div>
+          <div class="help-tip">
+      			<p class="tooltip">The number of times people are viewing each report type. This is based on the "Viewed report" event segmented by "tab"</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
+    </div>
     <div class="charts section people">people</div>
   
    
@@ -538,10 +548,14 @@
           });
       },
       'core': function() {
-        alert('core');
+         // report views query
+        MP.api.segment('Viewed report', _.extend({where: 'not "@mixpanel.com" in user["$email"]', on: 'properties["tab"]'}, globalParams))
+          .done(function(results) {
+            $('.chart.report-views .body').MPChart('setData', results);
+          });
       },
       'people': function() {
-        alert('people');
+        
       }
     };
     
