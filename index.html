@@ -388,7 +388,7 @@
         </div>
     </div>
      
-    <div class="charts">
+    <div class="charts section general">
       <div class="chart homepage-views">
         <div class="header">
           <div class="title">Unique homepage visits</div>
@@ -458,8 +458,10 @@
         </div>
         <div class="body"></div>
       </div>
-    
     </div>
+    <div class="charts section core">core</div>
+    <div class="charts section people">people</div>
+  
    
     <script>
     
@@ -574,6 +576,8 @@
         $('.nav-tabs li').removeClass('active');
         var $tab = $(e.target);
         $tab.parent().addClass('active');
+        $('.section').hide();
+        $('.section.' + $tab.data('section')).show();
         runQuery();
       });
       
