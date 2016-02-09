@@ -548,6 +548,16 @@
           });
       },
       'core': function() {
+        var unit = $('.unit-select').val();
+        var intervals = $('.intervals-input').val();
+        var startDate = moment().subtract(intervals, unit);
+        var endDate = moment();
+        var globalParams = {
+          unit: unit,
+          from: startDate,
+          to: endDate
+        }
+        
          // report views query
         MP.api.segment('Viewed report', _.extend({where: 'not "@mixpanel.com" in user["$email"]', on: 'properties["tab"]'}, globalParams))
           .done(function(results) {
