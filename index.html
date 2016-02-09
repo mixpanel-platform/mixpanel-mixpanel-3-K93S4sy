@@ -463,38 +463,6 @@
    
     <script>
     
-    $(document).ready(function() {
-      $('.unit-select').MPSelect({
-        items: [
-          {label: 'Day(s)', value: 'day'},
-          {label: 'Week(s)', value: 'week'},
-          {label: 'Month(s)', value: 'month'}
-        ]
-      })
-        .val('month')
-        .on('change', runQuery);
-        
-      $('.intervals-input').on('change', runQuery);
-      
-      $('.plan-changes .query-type-select').MPSelect({
-        items: [
-          {label: 'count', value: 'count'},
-          {label: '$ amount', value: 'value'},
-        ]
-      })
-        .on('change', runQuery);
-        
-      $('.charts .chart .body').MPChart({chartType: 'line'})
-      runQuery();
-      
-      $('.nav-tabs li').click(function(e) {
-        $('.nav-tabs li').removeClass('active');
-        var $tab = $(e.target);
-        $tab.addClass('active');
-        runQuery();
-      })
-    });
-  
     var sections = {
       'general': function() {
       
@@ -578,6 +546,38 @@
     var runQuery = function() {
       return sections[$('.nav-tabs .active').data('section')];
     };
+    
+    $(document).ready(function() {
+      $('.unit-select').MPSelect({
+        items: [
+          {label: 'Day(s)', value: 'day'},
+          {label: 'Week(s)', value: 'week'},
+          {label: 'Month(s)', value: 'month'}
+        ]
+      })
+        .val('month')
+        .on('change', runQuery);
+        
+      $('.intervals-input').on('change', runQuery);
+      
+      $('.plan-changes .query-type-select').MPSelect({
+        items: [
+          {label: 'count', value: 'count'},
+          {label: '$ amount', value: 'value'},
+        ]
+      })
+        .on('change', runQuery);
+        
+      $('.charts .chart .body').MPChart({chartType: 'line'})
+      runQuery();
+      
+      $('.nav-tabs li').click(function(e) {
+        $('.nav-tabs li').removeClass('active');
+        var $tab = $(e.target);
+        $tab.addClass('active');
+        runQuery();
+      });
+    });
     
     </script>
   </body>
