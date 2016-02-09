@@ -378,9 +378,9 @@
   <body class="mixpanel-platform-body">
     <div class="top">
         <ul class="nav nav-tabs">
-          <li role="presentation" class="active"><a href="#">General/Business</a></li>
-          <li role="presentation"><a href="#">Core product</a></li>
-          <li role="presentation"><a href="#">People/notifications</a></li>
+          <li role="presentation" data-section="general" class="active"><a href="#">General/Business</a></li>
+          <li role="presentation" data-section="core"><a href="#">Core product</a></li>
+          <li role="presentation" data-section="people"><a href="#">People/notifications</a></li>
         </ul>
         <div class="controls">
           <input type="text" class="intervals-input" value=24 />
@@ -486,79 +486,99 @@
         
       $('.charts .chart .body').MPChart({chartType: 'line'})
       runQuery();
+      
+      $('.nav-tabs li').click(function(e) {
+        $('.nav-tabs li').removeClass('active');
+        var $tab = $(e.target);
+        $tab.addClass('active');
+        runQuery();
+      })
     });
   
-    var runQuery = function() {
+    var sections = {
+      'general': function() {
       
-      var unit = $('.unit-select').val();
-      var intervals = $('.intervals-input').val();
-      var startDate = moment().subtract(intervals, unit);
-      var endDate = moment();
-      var globalParams = {
-        unit: unit,
-        from: startDate,
-        to: endDate
-      }
-      
-      // homepage views query
-      MP.api.segment('homepage new', _.extend({type: 'unique', where: 'not "@mixpanel.com" in user["$email"]'}, globalParams))
-        .done(function(results) {
-          $('.chart.homepage-views .body').MPChart('setData', results);
-        });
-        
-      // signups query
-      MP.api.segment('$signup', _.extend({where: 'not "@mixpanel.com" in user["$email"]'}, globalParams))
-        .done(function(results) {
-          $('.chart.new-users .body').MPChart('setData', results);
-        });
-    
-      // active users query
-      MP.api.segment('Viewed report', _.extend({
-        type: 'unique', 
-        where: 'user["Current tally"] > 500'
-      }, globalParams))
-        .done(function(results) {
-          $('.chart.active-users .body').MPChart('setData', results);
-        });
-        
-      // account changes (new, upsells, downgrades, churns)
-      $.ajax({
-        type: 'get',
-        url: 'https://josh.dev.mixpanel.org/admin/internal/api/plan_changes',
-        data: {
+        var unit = $('.unit-select').val();
+        var intervals = $('.intervals-input').val();
+        var startDate = moment().subtract(intervals, unit);
+        var endDate = moment();
+        var globalParams = {
           unit: unit,
-          from: startDate.format('YYYY-MM-DD'),
-          to: endDate.format('YYYY-MM-DD')
-        },
-        xhrFields: {
-          withCredentials: true
+          from: startDate,
+          to: endDate
         }
-      })
-        .done(function(results) {
-          $('.chart.plan-changes-count .body').MPChart('setData', results.counts);
-          $('.chart.plan-changes-value .body').MPChart('setData', results.values);
-        });
         
-      // integrations
-      MP.api.query('/api/2.0/engage/analytics', {
-        x_segment: 'first integration date',
-        x_type: 'datetime',
-        from_date: startDate.format('YYYY-MM-DD'),
-        to_date: endDate.format('YYYY-MM-DD'),
-        x_unit: unit,
-        where: 'properties["Current tally"] > 0'
-      })
-        .done(function(resp) { 
-          data = {};
-          _.each(resp.results, function(segmentsAndCounts, date) {
-            _.each(segmentsAndCounts, function(count, seg) {
-              data[seg] = data[seg] || {};
-              data[seg][date] = count;
+        // homepage views query
+        MP.api.segment('homepage new', _.extend({type: 'unique', where: 'not "@mixpanel.com" in user["$email"]'}, globalParams))
+          .done(function(results) {
+            $('.chart.homepage-views .body').MPChart('setData', results);
+          });
+          
+        // signups query
+        MP.api.segment('$signup', _.extend({where: 'not "@mixpanel.com" in user["$email"]'}, globalParams))
+          .done(function(results) {
+            $('.chart.new-users .body').MPChart('setData', results);
+          });
+      
+        // active users query
+        MP.api.segment('Viewed report', _.extend({
+          type: 'unique', 
+          where: 'user["Current tally"] > 500'
+        }, globalParams))
+          .done(function(results) {
+            $('.chart.active-users .body').MPChart('setData', results);
+          });
+          
+        // account changes (new, upsells, downgrades, churns)
+        $.ajax({
+          type: 'get',
+          url: 'https://josh.dev.mixpanel.org/admin/internal/api/plan_changes',
+          data: {
+            unit: unit,
+            from: startDate.format('YYYY-MM-DD'),
+            to: endDate.format('YYYY-MM-DD')
+          },
+          xhrFields: {
+            withCredentials: true
+          }
+        })
+          .done(function(results) {
+            $('.chart.plan-changes-count .body').MPChart('setData', results.counts);
+            $('.chart.plan-changes-value .body').MPChart('setData', results.values);
+          });
+          
+        // integrations
+        MP.api.query('/api/2.0/engage/analytics', {
+          x_segment: 'first integration date',
+          x_type: 'datetime',
+          from_date: startDate.format('YYYY-MM-DD'),
+          to_date: endDate.format('YYYY-MM-DD'),
+          x_unit: unit,
+          where: 'properties["Current tally"] > 0'
+        })
+          .done(function(resp) { 
+            data = {};
+            _.each(resp.results, function(segmentsAndCounts, date) {
+              _.each(segmentsAndCounts, function(count, seg) {
+                data[seg] = data[seg] || {};
+                data[seg][date] = count;
+              })
             })
-          })
-          $('.chart.integrations .body').MPChart('setData', data);
-        });
+            $('.chart.integrations .body').MPChart('setData', data);
+          });
+      },
+      'core': function() {
+        alert('core');
+      },
+      'people': function() {
+        alert('people');
+      }
     };
+    
+    var runQuery = function() {
+      return sections[$('.nav-tabs .active').data('section')];
+    };
+    
     </script>
   </body>
 </html>
