@@ -501,7 +501,7 @@
       }
       
       // homepage views query
-      MP.api.segment('Homepage new', _.extend({type: 'unique', where: 'not "@mixpanel.com" in user["$email"]'}, globalParams))
+      MP.api.segment('homepage new', _.extend({type: 'unique', where: 'not "@mixpanel.com" in user["$email"]'}, globalParams))
         .done(function(results) {
           $('.chart.homepage-views .body').MPChart('setData', results);
         });
