@@ -570,12 +570,10 @@
         
       $('.charts .chart .body').MPChart({chartType: 'line'})
     
-      debugger;
       $('.nav-tabs li').click(function(e) {
         $('.nav-tabs li').removeClass('active');
         var $tab = $(e.target);
-        debugger;
-        $tab.addClass('active');
+        $tab.parent().addClass('active');
         runQuery();
       });
       
