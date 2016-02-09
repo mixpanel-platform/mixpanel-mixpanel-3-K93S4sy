@@ -389,6 +389,16 @@
     </div>
      
     <div class="charts">
+      <div class="chart homepage-views">
+        <div class="header">
+          <div class="title">Homepage views</div>
+          <div class="help-tip">
+      			<p class="tooltip">The number of unique people viewing the home page</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
+      
       <div class="chart new-users">
         <div class="header">
           <div class="title">New signups</div>
@@ -490,6 +500,12 @@
         to: endDate
       }
       
+      // homepage views query
+      MP.api.segment('Homepage new', _.extend({type: 'unique', where: 'not "@mixpanel.com" in user["$email"]'}, globalParams))
+        .done(function(results) {
+          $('.chart.homepage-views .body').MPChart('setData', results);
+        });
+        
       // signups query
       MP.api.segment('$signup', _.extend({where: 'not "@mixpanel.com" in user["$email"]'}, globalParams))
         .done(function(results) {
