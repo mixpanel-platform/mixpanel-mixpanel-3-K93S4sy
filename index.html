@@ -569,14 +569,16 @@
         .on('change', runQuery);
         
       $('.charts .chart .body').MPChart({chartType: 'line'})
-      runQuery();
-      
+    
+      debugger;
       $('.nav-tabs li').click(function(e) {
         $('.nav-tabs li').removeClass('active');
         var $tab = $(e.target);
         $tab.addClass('active');
         runQuery();
       });
+      
+      runQuery();
     });
     
     </script>
