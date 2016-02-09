@@ -460,11 +460,20 @@
       </div>
     </div>
     <div class="charts section core">
-      <div class="chart report-views">
+      <div class="chart report-views-total">
         <div class="header">
           <div class="title">Total report views by report type</div>
           <div class="help-tip">
       			<p class="tooltip">The number of times people are viewing each report type. This is based on the "Viewed report" event segmented by "tab"</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
+      <div class="chart report-views-uniquje">
+        <div class="header">
+          <div class="title">Unique report views by report type</div>
+          <div class="help-tip">
+      			<p class="tooltip">The number of people that are viewing each report type. This is based on the "Viewed report" event segmented by "tab"</p>
       		</div>
         </div>
         <div class="body"></div>
@@ -558,10 +567,20 @@
           to: endDate
         }
         
-         // report views query
+         // total report views query
         MP.api.segment('Viewed report', _.extend({where: 'not "@mixpanel.com" in user["$email"]', on: 'properties["tab"]'}, globalParams))
           .done(function(results) {
-            $('.chart.report-views .body').MPChart('setData', results);
+            $('.chart.report-views-total .body').MPChart('setData', results);
+          });
+          
+        // unqiue report views query
+        MP.api.segment('Viewed report', _.extend({
+          type: 'unique', 
+          where: 'not "@mixpanel.com" in user["$email"]', 
+          on: 'properties["tab"]'
+        }, globalParams))
+          .done(function(results) {
+            $('.chart.report-views-unique .body').MPChart('setData', results);
           });
       },
       'people': function() {
