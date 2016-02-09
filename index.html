@@ -544,7 +544,7 @@
     };
     
     var runQuery = function() {
-      return sections[$('.nav-tabs .active').data('section')];
+      return sections[$('.nav-tabs li.active').data('section')]();
     };
     
     $(document).ready(function() {
