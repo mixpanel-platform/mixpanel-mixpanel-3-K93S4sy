@@ -499,7 +499,7 @@
     
     
     var getActiveUsers = function() {
-      
+      var today = moment().format('YYYY-MM-DD');
       var data = {
         params: {projectTimeOffset: -8, from_date: today, to_date: today},
         script: $.trim($("#activeUsersQuery").html()),
