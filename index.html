@@ -539,7 +539,7 @@
           
           var newCount = parseInt(resp[0]);
           var oldCount = parseInt($('.active-users-count').text() || 0);
-          var animationLength = 2000 // milis
+          var animationLength = 3000 // milis
           var intervals = Math.abs(newCount - oldCount);
           var intervalLength = (animationLength / intervals)
           for(var i = 1; i <= intervals; i++) {
@@ -553,7 +553,7 @@
         })
       }
       
-      setInterval(getActiveUsers, 5000);
+      setInterval(getActiveUsers, 3000);
     });
        
 
