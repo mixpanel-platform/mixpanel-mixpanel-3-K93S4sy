@@ -560,6 +560,12 @@
    
     <script>
     
+    $.ajaxSetup({
+      xhrFields: {
+        withCredentials: true
+      }
+    });
+    
     var signData = function(origData, apiKey, apiSecret) {
       apiKey = apiKey || MP.api.apiKey;
       apiSecret = apiSecret || MP.api.apiSecret;
@@ -616,7 +622,6 @@
       // setInterval(getActiveUsers, 5000);
     });
        
-
     
     var sections = {
       'general': function() {
@@ -661,9 +666,7 @@
             from: startDate.format('YYYY-MM-DD'),
             to: endDate.format('YYYY-MM-DD')
           },
-          xhrFields: {
-            withCredentials: true
-          }
+          
         })
           .done(function(results) {
             $('.chart.plan-changes-count .body').MPChart('setData', results.counts);
@@ -719,13 +722,7 @@
           });
           
         // median queries
-       $.ajax({
-          type: 'get',
-          url: 'https://josh.dev.mixpanel.org/admin/internal/api/read_api_creds',
-          xhrFields: {
-            withCredentials: true
-          }
-        }).done(function(creds) {
+       $.get('https://josh.dev.mixpanel.org/admin/internal/api/read_api_creds').done(function(creds) {
           var from = moment().subtract(7, 'day').format('YYYY-MM-DD');
           var to = moment().format('YYYY-MM-DD');
           var data = {
