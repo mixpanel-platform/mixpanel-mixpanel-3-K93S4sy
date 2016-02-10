@@ -487,7 +487,7 @@
       function main() {
         return Events({from_date: "2016-02-09", to_date: "2016-02-09", event_selectors: [{event: "Viewed report"}]})
           .filter(function(event) {
-            var nowProjectTime = nowUTC + (-8 * 60 * 60 * 1000);
+            var nowProjectTime = nowUTC + (params.projectTimeOffset * 60 * 60 * 1000);
             return (event.time >= nowProjectTime - activityWindow);
           })
           .groupByUser(mixpanel.reducer.count())
@@ -501,7 +501,7 @@
     
     MP.api.on('mpplatform.credentialsRegistered', function() {
       var today = (new Date()).toISOString().split("T")[0];
-      var params = JSON.stringify({projectTimeOffset: -8, from_date: today, to_date: today});
+      var params = {projectTimeOffset: -8, from_date: today, to_date: today};
       var script = $.trim($("#activeUsersQuery").html());
       MP.api.custom_query(script, params).done(function(resp) {
         console.log(resp);
