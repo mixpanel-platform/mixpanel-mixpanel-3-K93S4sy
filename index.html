@@ -485,7 +485,7 @@
       
       var nowUTC = (new Date()).getTime();
       var activityWindow = 5 * 60 * 1000;
-      function main() {
+      function main(params) {
           return Events({from_date: params.from_date, params.to_date, event_selectors: [{event: "Viewed report"}]})
               .filter(function(event) {
                 var nowProjectTime = nowUTC + (params.projectTimeOffset * 60 * 60 * 1000);
