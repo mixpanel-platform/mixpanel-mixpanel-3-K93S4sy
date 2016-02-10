@@ -484,14 +484,13 @@
     <script type="text/cq" id="activeUsersQuery">
       var today = (new Date()).toISOString().split("T")[0];
       var nowUTC = (new Date()).getTime();
-      var activityWindow = 5 * 60 * 1000; // 5 minutes
+      var activityWindow = 5 * 60 * 1000;
       
       function main() {
           return Events({from_date: today, to_date: today, event_selectors: [{event: "Viewed report"}]})
               .filter(function(event) {
-      
-                  var nowProjectTime = ;
-                  return (event.time >= nowProjectTime - (nowUTC + (params.projectTimeOffset * 60 * 60 * 1000)));
+                var nowProjectTime = nowUTC - (params.projectTimeOffset * 60 * 60 * 1000);
+                return (event.time >= nowProjectTime - activityWindow);
               })
               .groupBy(["distinct_id"], mixpanel.reducer.count())
               .reduce(mixpanel.reducer.count())
