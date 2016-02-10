@@ -486,6 +486,15 @@
         </div>
         <div class="body"></div>
       </div>
+      <div class="chart report-median-queries">
+        <div class="header">
+          <div class="title">Median queries per user per report type</div>
+          <div class="help-tip">
+      			<p class="tooltip">The media number of queries that users make per query type</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
     </div>
     <div class="charts section people" style="display: none;">people</div>
   
@@ -500,6 +509,52 @@
           })
           .groupByUser(mixpanel.reducer.count())
           .reduce(mixpanel.reducer.count())
+      }
+    </script>
+    
+    <script type="text/cq" id="medianQueriesQuery">
+      function getDay(event) {
+          return (new Date(event.time)).toISOString().split("T")[0];
+      }
+      
+      
+      function getMonth(event) {
+          var date = (new Date(event.time)).toISOString().split("T")[0];
+          var parts = date.split("-");
+          return parts[0] + "-" + parts[1];
+      }
+      
+      function main() {
+          return Events({from_date:"2016-01-07", to_date: "2016-01-07", event_selectors: [{event: "API request"}]})
+              .groupBy(["properties.project id", getDay, "properties.endpoint"], mixpanel.reducer.count())
+              .groupBy([function(obj) { return obj.key.slice(1); } ], function (accumulators, objects) {
+                  // { key: [day, tab, distinct_id], value: count }
+                  ret = [];
+                  for (var i = 0; i < accumulators.length; ++i) {
+                      ret = ret.concat(accumulators[i]);
+                  }
+                  for (var i = 0; i < objects.length; ++i) {
+                      ret.push(objects[i].value)
+                  }
+                  return ret;
+              })
+              .map(function(obj) {
+                  // obj.key: [day, tab]
+                  // obj.value: [values]
+                  obj.value.sort(function(a,b) { return a - b;});
+                  val = obj.value;
+      
+                  obj.median = (val.length % 2 == 0 ? (val[val.length / 2] + val[val.length / 2- 1]) / 2 : val[Math.floor(val.length / 2)]);
+                  obj.ninetieth = val[Math.floor(val.length * 9 / 10)]
+                  obj.max = val[val.length - 1];
+                  obj.value = undefined;
+                  return {
+                      date: obj.key[0],
+                      tab: obj.key[1],
+                      median: obj.median,
+                      ninetieth: obj.ninetieth
+                  }
+              })
       }
     </script>
    
@@ -645,7 +700,7 @@
          // total report views query
         MP.api.segment('Viewed report', _.extend({where: 'not "@mixpanel.com" in user["$email"]', on: 'properties["tab"]'}, globalParams))
           .done(function(results) {
-            $('.chart.report-views-total .body').MPChart('setData', results);
+            $('.core .chart.report-views-total .body').MPChart('setData', results);
           });
           
         // unqiue report views query
@@ -655,8 +710,23 @@
           on: 'properties["tab"]'
         }, globalParams))
           .done(function(results) {
-            $('.chart.report-views-unique .body').MPChart('setData', results);
+            $('.core .chart.report-views-unique .body').MPChart('setData', results);
           });
+          
+        // median queries
+        var from = moment().format('YYYY-MM-DD');
+        var to = moment().subtract(7, 'day').format('YYYY-MM-DD');
+        var params = {from_date: from, to_date: to};
+        var script = $.trim($("#mediaQueriesQuery").html());
+        MP.api.custom_query(script, params).done(function(results) {
+          var series = {};
+          for(var i = 0; i < results.length; i++) {
+            var tab = results[i].tab;
+            series[tab] = series[tab] || {};
+            series[tab][results[i].date] = results[i].median
+          }
+          $('.core .chart.report-media-queries .body').MPChart('setData', series);
+        })
       },
       'people': function() {
         
