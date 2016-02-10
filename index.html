@@ -482,13 +482,13 @@
     <div class="charts section people" style="display: none;">people</div>
   
     <script type="text/cq" id="activeUsersQuery">
-      var today = (new Date()).toISOString().split("T")[0];
+      
       var nowUTC = (new Date()).getTime();
       var activityWindow = 5 * 60 * 1000;
       function main() {
-          return Events({from_date: '2016-02-08', to_date: today, event_selectors: [{event: "Viewed report"}]})
+          return Events({from_date: params.from_date, params.to_date, event_selectors: [{event: "Viewed report"}]})
               .filter(function(event) {
-                var nowProjectTime = nowUTC + (-8 * 60 * 60 * 1000);
+                var nowProjectTime = nowUTC + (params.projectTimeOffset * 60 * 60 * 1000);
                 return (event.time >= nowProjectTime - activityWindow);
               })
               .groupBy(["distinct_id"], mixpanel.reducer.count())
@@ -501,10 +501,9 @@
     
     
     MP.api.on('mpplatform.credentialsRegistered', function() {
-      
-      debugger;
-        var params = JSON.stringify({projectTimeOffset: -8});
-        var script = $.trim($("#activeUsersQuery").html());
+      var today = (new Date()).toISOString().split("T")[0];
+      var params = JSON.stringify({projectTimeOffset: -8, from_date: today, to_date: today});
+      var script = $.trim($("#activeUsersQuery").html());
       MP.api.custom_query(script, params).done(function(resp) {
         console.log(resp);
       })
