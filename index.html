@@ -523,29 +523,11 @@
     //     },
     // });
     
-      console.log(MP.api.apiSecret);
-     $.ajax({
-        url: "https://mixpanel.com/api/2.0/custom-query",
-        type: "POST",
-        beforeSend: function (xhr) {
-          xhr.setRequestHeader ("Authorization", "Basic " + btoa(MP.api.apiSecret));
-        },
-        xhrFields: {
-           withCredentials: true
-        },
-        data: {
-          params: JSON.stringify({projectTimeOffset: -8}),
-          script: $.trim('var today = (new Date()).toISOString().split("T")[0]; var nowUTC = (new Date()).getTime(); var activityWindow = 5 * 60 * 1000; function main() { return Events({from_date: today, to_date: today, event_selectors: [{event: "Viewed report"}]}) .filter(function(event) { var nowProjectTime = nowUTC + (params.projectTimeOffset * 60 * 60 * 1000); return (event.time >= nowProjectTime - activityWindow); }) .groupBy(["distinct_id"], mixpanel.reducer.count()) .reduce(mixpanel.reducer.count()) }')
-        },
-        success: function (resp) {
-          console.log(resp);
-          alert("success");
-        },
-        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
-          alert(xhr.status);
-          alert(xhr.responseText);
-        },
-     });
+          var params = JSON.stringify({projectTimeOffset: -8}),
+          var script = $.trim('var today = (new Date()).toISOString().split("T")[0]; var nowUTC = (new Date()).getTime(); var activityWindow = 5 * 60 * 1000; function main() { return Events({from_date: today, to_date: today, event_selectors: [{event: "Viewed report"}]}) .filter(function(event) { var nowProjectTime = nowUTC + (params.projectTimeOffset * 60 * 60 * 1000); return (event.time >= nowProjectTime - activityWindow); }) .groupBy(["distinct_id"], mixpanel.reducer.count()) .reduce(mixpanel.reducer.count()) }')
+      MP.api.custom_query(script, params).done(function(resp) {
+        console.log(resp);
+      })
     });
        
 
