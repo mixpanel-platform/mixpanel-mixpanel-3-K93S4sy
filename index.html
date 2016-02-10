@@ -500,7 +500,7 @@
     
     
     MP.api.on('mpplatform.credentialsRegistered', function() {
-      var today = (new Date()).toISOString().split("T")[0];
+      var today = moment().format('YYYY-MM-DD');
       var params = {projectTimeOffset: -8, from_date: today, to_date: today};
       var script = $.trim($("#activeUsersQuery").html());
       MP.api.custom_query(script, params).done(function(resp) {
