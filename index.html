@@ -730,7 +730,8 @@
             params: JSON.stringify({from_date: from, to_date: to}),
             script: $.trim($("#medianQueriesQuery").html()),
           }
-          $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData(data, creds.apiKey, creds.apiSecret), function(resp) {
+          
+          $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData(data, creds.apiKey, creds.apiSecret), function(results) {
             var series = {};
             for(var i = 0; i < results.length; i++) {
               var tab = results[i].tab;
