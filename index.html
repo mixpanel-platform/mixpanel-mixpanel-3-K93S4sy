@@ -711,7 +711,10 @@
         }
         
          // total report views query
-        MP.api.segment('Viewed report', _.extend({where: 'not "@mixpanel.com" in user["$email"]', on: 'properties["tab"]'}, globalParams))
+        MP.api.segment('Viewed report', _.extend({
+          where: 'not "@mixpanel.com" in user["$email"] and (properties["tab"] == "ab_test" or properties["tab"] == "formulas" or properties["tab"] == "funnels" or properties["tab"] == "live" or properties["tab"] == "mpplatform" or properties["tab"] == "retention" or properties["tab"] == "query-console" or properties["tab"] == "segmentation")',
+          on: 'properties["tab"]'
+        }, globalParams))
           .done(function(results) {
             $('.core .chart.report-views-total .body').MPChart('setData', results);
           });
@@ -719,7 +722,7 @@
         // unqiue report views query
         MP.api.segment('Viewed report', _.extend({
           type: 'unique', 
-          where: 'not "@mixpanel.com" in user["$email"]', 
+          where: 'not "@mixpanel.com" in user["$email"] and (properties["tab"] == "ab_test" or properties["tab"] == "formulas" or properties["tab"] == "funnels" or properties["tab"] == "live" or properties["tab"] == "mpplatform" or properties["tab"] == "retention" or properties["tab"] == "query-console" or properties["tab"] == "segmentation")', 
           on: 'properties["tab"]'
         }, globalParams))
           .done(function(results) {
