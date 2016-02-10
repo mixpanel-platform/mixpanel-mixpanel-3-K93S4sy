@@ -609,7 +609,7 @@
       }
       
       getActiveUsers();
-      setInterval(getActiveUsers, 5000);
+      // setInterval(getActiveUsers, 5000);
     });
        
 
@@ -686,6 +686,7 @@
             $('.chart.integrations .body').MPChart('setData', data);
           });
       },
+      
       'core': function() {
         var unit = $('.unit-select').val();
         var intervals = $('.intervals-input').val();
@@ -716,8 +717,8 @@
         // median queries
         var from = moment().format('YYYY-MM-DD');
         var to = moment().subtract(7, 'day').format('YYYY-MM-DD');
-        var params = JSON.stringify({from_date: from, to_date: to});
-        var script = $.trim($("#mediaQueriesQuery").html());
+        var params = {from_date: from, to_date: to};
+        var script = $.trim($("#medianQueriesQuery").html());
         MP.api.custom_query(script, params).done(function(results) {
           var series = {};
           for(var i = 0; i < results.length; i++) {
@@ -728,6 +729,7 @@
           $('.core .chart.report-media-queries .body').MPChart('setData', series);
         })
       },
+      
       'people': function() {
         
       }
