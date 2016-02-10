@@ -738,6 +738,7 @@
               series[tab] = series[tab] || {};
               series[tab][results[i].date] = results[i].median
             }
+            debugger;
             $('.core .chart.report-media-queries .body').MPChart('setData', series);
           })
         });
