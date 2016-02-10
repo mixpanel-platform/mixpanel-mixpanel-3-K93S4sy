@@ -728,7 +728,6 @@
           
         // median queries
         getWithCredentials('https://josh.dev.mixpanel.org/admin/internal/api/read_api_creds').done(function(creds) {
-          debugger;
           var from = moment().subtract(7, 'day').format('YYYY-MM-DD');
           var to = moment().format('YYYY-MM-DD');
           var data = {
