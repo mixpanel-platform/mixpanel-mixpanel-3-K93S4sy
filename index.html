@@ -498,6 +498,24 @@
     <script>
     
     
+    var getActiveUsers = function() {
+      // compute sig
+      var params = this.queryOptions.data;
+      params.api_key = apiKey;
+      var utcNow = new Date().getTime();
+      params.expire = Math.ceil(utcNow / 1000) + 60 * 60; // 1 hour expiry
+      var paramNames = _.keys(params).sort();
+      var sigString = _.reduce(paramNames, function(memo, key) {
+        if (_.isUndefined(params[key])) {
+          return memo;
+        }
+        return memo + key + '=' + params[key];
+      }, '');
+      sigString += apiSecret;
+      params.sig = hex_md5(sigString);
+      this.queryOptions.data = params;
+
+    }
     
     MP.api.on('mpplatform.credentialsRegistered', function() {
       
@@ -508,7 +526,7 @@
         MP.api.custom_query(script, params).done(function(resp) {
           $('.activeUsers').text(parseInt(resp[0]));
         })
-      }, 1000);
+      }, 10000);
       
     });
        
