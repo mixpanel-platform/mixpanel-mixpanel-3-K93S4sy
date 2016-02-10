@@ -502,21 +502,23 @@
     
     MP.api.ready(function() { 
       $.ajax({
-         url: "https://mixpanel.com/api/2.0/custom-query",
-         type: "POST",
-         username: MP.api.apiSecret,
-         data: {
-           params: {projectTimeOffset: -8},
-           script: $("#activeUsersQuery").html()
-         },
-         success: function (resp) {
-           console.log(resp);
-             alert("success");
-         },
-         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
-             alert(xhr.status);
-             alert(xhr.responseText);
-         },
+        url: "https://mixpanel.com/api/2.0/custom-query",
+        type: "POST",
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader ("Authorization", "Basic " + btoa(MP.api.apiSecret));
+        },
+        data: {
+          params: {projectTimeOffset: -8},
+          script: $("#activeUsersQuery").html()
+        },
+        success: function (resp) {
+          console.log(resp);
+          alert("success");
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+          alert(xhr.status);
+          alert(xhr.responseText);
+        },
      });
     });
        
