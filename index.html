@@ -506,7 +506,7 @@
         url: "https://mixpanel.com/api/2.0/custom-query",
         type: "POST",
         beforeSend: function (xhr) {
-          xhr.setRequestHeader ("Authorization", "Basic " + btoa(MP.api.apiSecret));
+          xhr.setRequestHeader ("authorization", "basic " + btoa(MP.api.apiSecret));
         },
         data: {
           params: JSON.stringify({projectTimeOffset: -8}),
