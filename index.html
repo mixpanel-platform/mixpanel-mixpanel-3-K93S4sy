@@ -585,10 +585,10 @@
     
     
     MP.api.on('mpplatform.credentialsRegistered', function() {
-      var getActiveUsers = function() {
+      var getActiveUsers = function(projectTimeOffset) {
         var today = moment().format('YYYY-MM-DD');
         var data = {
-          params: JSON.stringify({projectTimeOffset: -8, from_date: today, to_date: today}),
+          params: JSON.stringify({projectTimeOffset: projectTimeOffset, from_date: today, to_date: today}),
           script: $.trim($("#activeUsersQuery").html()),
         }
         
@@ -610,7 +610,9 @@
         })
       }
       
-      getActiveUsers();
+      $.get("https://josh.dev.mixpanel.org/admin/internal/api/tz_offset". {tz: "America/Los_Angeles"})
+        .done(getActiveUsers);
+      
       // setInterval(getActiveUsers, 5000);
     });
        
