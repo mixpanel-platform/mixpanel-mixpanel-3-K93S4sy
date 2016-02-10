@@ -541,7 +541,7 @@
           var oldCount = $('.active-users-count').text() || 0;
           var animationLength = 1000 // milis
           var intervals = Math.abs(newCount - oldCount);
-          var intervalLength = (intervalLength / animationLength)
+          var intervalLength = (animationLength / intervals)
           debugger;
           for(var i = 1; i <= intervals; i++) {
             setTimeout(function() {
