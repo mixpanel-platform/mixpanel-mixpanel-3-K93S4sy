@@ -481,8 +481,46 @@
     </div>
     <div class="charts section people" style="display: none;">people</div>
   
+    <script type="text/cq" id="activeUsersQuery">
+      var today = (new Date()).toISOString().split("T")[0];
+      var nowUTC = (new Date()).getTime();
+      var activityWindow = 5 * 60 * 1000 // 5 minutes
+      function main() {
+          return Events({from_date: today, to_date: today, event_selectors: [{event: "Viewed report"}]})
+              .filter(function(event) {
+      
+                  var nowProjectTime = ;
+                  return (event.time >= nowProjectTime - (nowUTC + (params.projectTimeOffset * 60 * 60 * 1000)));
+              })
+              .groupBy(["distinct_id"], mixpanel.reducer.count())
+              .reduce(mixpanel.reducer.count())
+      }
+    </script>
    
     <script>
+    
+    
+    MP.api.ready(function() { 
+      $.ajax({
+         url: "https://mixpanel.com/api/2.0/custom-query",
+         type: "POST",
+         username: MP.api.apiSecret,
+         data: {
+           params: {projectTimeOffset: -8},
+           script: $("#activeUsersQuery").html()
+         },
+         success: function (resp) {
+           console.log(resp);
+             alert("success");
+         },
+         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+             alert(xhr.status);
+             alert(xhr.responseText);
+         },
+     });
+    });
+       
+
     
     var sections = {
       'general': function() {
