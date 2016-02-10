@@ -510,10 +510,10 @@
       data.expire = Math.ceil(utcNow / 1000) + 60 * 60; // 1 hour expiry
       var paramNames = _.keys(data).sort();
       var sigString = _.reduce(paramNames, function(memo, key) {
-        if (_.isUndefined(params[key])) {
+        if (_.isUndefined(data[key])) {
           return memo;
         }
-        return memo + key + '=' + params[key];
+        return memo + key + '=' + data[key];
       }, '');
       sigString += apiSecret;
       data.sig = hex_md5(sigString);
