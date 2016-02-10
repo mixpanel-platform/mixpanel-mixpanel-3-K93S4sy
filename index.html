@@ -488,9 +488,9 @@
       </div>
       <div class="chart report-median-queries">
         <div class="header">
-          <div class="title">Median queries per user per report type</div>
+          <div class="title">Queries per endpoint per project (90th percentile)</div>
           <div class="help-tip">
-      			<p class="tooltip">The media number of queries that users make per query type</p>
+      			<p class="tooltip">For project that reprents the ninetieth precenile on each endpoint, how many queries do they make? This uses the "Mixpanel Read API" project and the "API request" event.</p>
       		</div>
         </div>
         <div class="body"></div>
@@ -736,10 +736,8 @@
             for(var i = 0; i < results.length; i++) {
               var tab = results[i].tab;
               series[tab] = series[tab] || {};
-              series[tab][results[i].date] = results[i].median
+              series[tab][results[i].date] = results[i].ninetieth
             }
-            console.log(results);
-            console.log(series);
             $('.core .chart.report-median-queries .body').MPChart('setData', series);
           })
         });
