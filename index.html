@@ -383,7 +383,7 @@
     </style>
   </head>
   <body class="mixpanel-platform-body">
-    <div class="active-users-container">There are currently <span class="active-users"></span> users on Mixpanel</div>
+    <div class="active-users-container">There are currently <span class="active-users-count"></span> users on Mixpanel</div>
     <div class="top">
         <ul class="nav nav-tabs">
           <li role="presentation" data-section="general" class="active"><a href="#">General/Business</a></li>
@@ -538,7 +538,7 @@
         $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData(data), function(resp) {
           
           var newCount = parseInt(resp[0]);
-          var oldCount = $('.active-users').text() || 0;
+          var oldCount = $('.active-users-count').text() || 0;
           var animationLength = 1000 // milis
           var intervals = Math.abs(newCount - oldCount);
           var intervalLength = (intervalLength / animationLength)
@@ -546,7 +546,7 @@
           for(var i = 1; i <= intervals; i++) {
             setTimeout(function() {
               var num = newCount > oldCount ? oldCount + i : oldCount - i;
-              $('.active-users').text(num);
+              $('.active-users-count').text(num);
             }, intervalLength);
           }
         })
