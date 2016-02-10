@@ -515,7 +515,7 @@
         }
         return memo + key + '=' + data[key];
       }, '');
-      sigString += apiSecret;
+      sigString += MP.api.apiSecret;
       data.sig = hex_md5(sigString);
      
       $.post("https://mixpanel.com/api/2.0/custom_query_v1", data, function(resp) {
