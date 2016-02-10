@@ -545,6 +545,7 @@
           for(var i = 1; i <= intervals; i++) {
             var c = i;
             setTimeout(function() {
+              debugger;
               var num = newCount > oldCount ? oldCount + c : oldCount - c;
               $('.active-users-count').text(num);
             }, intervalLength * c);
