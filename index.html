@@ -500,7 +500,7 @@
     <script>
     
     
-    MP.api.ready(function() { 
+    MP.api.on('mpplatform.credentialsRegistered', function() {
       debugger;
       $.ajax({
         url: "https://mixpanel.com/api/2.0/custom-query",
