@@ -715,19 +715,24 @@
           });
           
         // median queries
-        var from = moment().format('YYYY-MM-DD');
-        var to = moment().subtract(7, 'day').format('YYYY-MM-DD');
-        var params = {from_date: from, to_date: to};
-        var script = $.trim($("#medianQueriesQuery").html());
-        MP.api.custom_query(script, params).done(function(results) {
-          var series = {};
-          for(var i = 0; i < results.length; i++) {
-            var tab = results[i].tab;
-            series[tab] = series[tab] || {};
-            series[tab][results[i].date] = results[i].median
+        $.get('https://josh.dev.mixpanel.org/admin/internal/api/read_api_creds', function(creds) {
+          var from = moment().format('YYYY-MM-DD');
+          var to = moment().subtract(7, 'day').format('YYYY-MM-DD');
+          var data = {
+            params: {from_date: from, to_date: to},
+            script: $.trim($("#medianQueriesQuery").html()),
           }
-          $('.core .chart.report-media-queries .body').MPChart('setData', series);
-        })
+          $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData(data), function(resp) {
+            var series = {};
+            for(var i = 0; i < results.length; i++) {
+              var tab = results[i].tab;
+              series[tab] = series[tab] || {};
+              series[tab][results[i].date] = results[i].median
+            }
+            $('.core .chart.report-media-queries .body').MPChart('setData', series);
+          })
+        });
+      
       },
       
       'people': function() {
