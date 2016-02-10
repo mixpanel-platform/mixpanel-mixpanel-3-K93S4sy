@@ -716,7 +716,7 @@
         // median queries
         var from = moment().format('YYYY-MM-DD');
         var to = moment().subtract(7, 'day').format('YYYY-MM-DD');
-        var params = {from_date: from, to_date: to};
+        var params = JSON.stringify({from_date: from, to_date: to});
         var script = $.trim($("#mediaQueriesQuery").html());
         MP.api.custom_query(script, params).done(function(results) {
           var series = {};
