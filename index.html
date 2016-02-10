@@ -500,12 +500,16 @@
     
     
     MP.api.on('mpplatform.credentialsRegistered', function() {
-      var today = moment().format('YYYY-MM-DD');
-      var params = {projectTimeOffset: -8, from_date: today, to_date: today};
-      var script = $.trim($("#activeUsersQuery").html());
-      MP.api.custom_query(script, params).done(function(resp) {
-        console.log(resp);
-      })
+      
+      setInterval(function() {
+        var today = moment().format('YYYY-MM-DD');
+        var params = {projectTimeOffset: -8, from_date: today, to_date: today};
+        var script = $.trim($("#activeUsersQuery").html());
+        MP.api.custom_query(script, params).done(function(resp) {
+          $('.activeUsers').text(parseInt(resp[0]));
+        })
+      }, 1000);
+      
     });
        
 
