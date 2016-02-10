@@ -489,7 +489,7 @@
       function main() {
           return Events({from_date: today, to_date: today, event_selectors: [{event: "Viewed report"}]})
               .filter(function(event) {
-                var nowProjectTime = nowUTC - (params.projectTimeOffset * 60 * 60 * 1000);
+                var nowProjectTime = nowUTC + (-8 * 60 * 60 * 1000);
                 return (event.time >= nowProjectTime - activityWindow);
               })
               .groupBy(["distinct_id"], mixpanel.reducer.count())
