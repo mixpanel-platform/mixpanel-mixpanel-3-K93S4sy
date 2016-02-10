@@ -715,7 +715,13 @@
           });
           
         // median queries
-        $.get('https://josh.dev.mixpanel.org/admin/internal/api/read_api_creds', function(creds) {
+       $.ajax({
+          type: 'get',
+          url: 'https://josh.dev.mixpanel.org/admin/internal/api/read_api_creds',\
+          xhrFields: {
+            withCredentials: true
+          }
+        }).done(function(creds) {
           var from = moment().format('YYYY-MM-DD');
           var to = moment().subtract(7, 'day').format('YYYY-MM-DD');
           var data = {
