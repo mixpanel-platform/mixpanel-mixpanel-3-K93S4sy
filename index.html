@@ -672,7 +672,7 @@
             from: startDate.format('YYYY-MM-DD'),
             to: endDate.format('YYYY-MM-DD')
           }
-        })
+        )
           .done(function(results) {
             $('.chart.plan-changes-count .body').MPChart('setData', results.counts);
             $('.chart.plan-changes-value .body').MPChart('setData', results.values);
