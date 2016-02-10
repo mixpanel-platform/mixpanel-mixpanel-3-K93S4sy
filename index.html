@@ -501,7 +501,7 @@
     var getActiveUsers = function() {
       var today = moment().format('YYYY-MM-DD');
       var data = {
-        params: {projectTimeOffset: -8, from_date: today, to_date: today},
+        params: JSON.stringify({projectTimeOffset: -8, from_date: today, to_date: today}),
         script: $.trim($("#activeUsersQuery").html()),
       }
       // compute sig
@@ -517,7 +517,7 @@
       }, '');
       sigString += MP.api.apiSecret;
       data.sig = hex_md5(sigString);
-     
+     debugger;
       $.post("https://mixpanel.com/api/2.0/custom_query_v1", data, function(resp) {
         console.log(resp);
       })
