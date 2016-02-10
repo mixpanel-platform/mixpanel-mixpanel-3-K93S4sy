@@ -501,7 +501,7 @@
     var signData = function(origData) {
       data = _.extend({
         api_key: MP.api.apiKey,
-        expire: Math.ceil((new Date().getTime()) / 1000) + 60 * 60; // 1 hour expiry
+        expire: Math.ceil((new Date().getTime()) / 1000) + 60 * 60 // 1 hour expiry
       }, origData)
       
       // sign
