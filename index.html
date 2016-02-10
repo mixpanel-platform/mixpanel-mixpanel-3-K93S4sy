@@ -503,7 +503,7 @@
     MP.api.on('mpplatform.credentialsRegistered', function() {
       debugger;
       $.ajax({
-        url: "https://mixpanel.com/api/2.0/custom-query",
+        url: "https://josh.dev.mixpanel.org/api/2.0/custom-query",
         type: "POST",
         beforeSend: function (xhr) {
           xhr.setRequestHeader ("authorization", "basic " + btoa(MP.api.apiSecret));
