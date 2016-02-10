@@ -560,12 +560,6 @@
    
     <script>
     
-    $.ajaxSetup({
-      xhrFields: {
-        withCredentials: true
-      }
-    });
-    
     var signData = function(origData, apiKey, apiSecret) {
       apiKey = apiKey || MP.api.apiKey;
       apiSecret = apiSecret || MP.api.apiSecret;
@@ -616,12 +610,26 @@
         })
       }
       
-      $.get("https://josh.dev.mixpanel.org/admin/internal/api/tz_offset", {tz: "America/Los_Angeles"})
+      getWithCredentials("https://josh.dev.mixpanel.org/admin/internal/api/tz_offset", {tz: "America/Los_Angeles"})
         .done(getActiveUsers);
       
       // setInterval(getActiveUsers, 5000);
     });
        
+    var getWithCredentials = function(url, data, success) {
+      var params = {
+        type: 'get',
+        xhrFields: { withCredentials: true }
+      }
+      if (typeof(url) == "object") {
+         params = _.extend(params, url);
+      } else {
+        params.url = url;
+        params.data = data;
+        params.success = callback;
+      }
+      return $.ajax(params)
+    }
     
     var sections = {
       'general': function() {
@@ -658,15 +666,12 @@
           });
           
         // account changes (new, upsells, downgrades, churns)
-        $.ajax({
-          type: 'get',
-          url: 'https://mixpanel.com/admin/internal/api/plan_changes',
-          data: {
+        getWithCredentials('https://mixpanel.com/admin/internal/api/plan_changes',
+          {
             unit: unit,
             from: startDate.format('YYYY-MM-DD'),
             to: endDate.format('YYYY-MM-DD')
-          },
-          
+          }
         })
           .done(function(results) {
             $('.chart.plan-changes-count .body').MPChart('setData', results.counts);
@@ -722,7 +727,7 @@
           });
           
         // median queries
-       $.get('https://josh.dev.mixpanel.org/admin/internal/api/read_api_creds').done(function(creds) {
+       getWithCredentials('https://josh.dev.mixpanel.org/admin/internal/api/read_api_creds').done(function(creds) {
           var from = moment().subtract(7, 'day').format('YYYY-MM-DD');
           var to = moment().format('YYYY-MM-DD');
           var data = {
