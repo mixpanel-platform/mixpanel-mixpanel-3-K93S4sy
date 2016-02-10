@@ -622,7 +622,7 @@
         xhrFields: { withCredentials: true }
       }
       if (typeof(url) == "object") {
-         params = _.extend(params, url);
+        params = _.extend(params, url);
       } else {
         params.url = url;
         params.data = data;
@@ -727,7 +727,8 @@
           });
           
         // median queries
-       getWithCredentials('https://josh.dev.mixpanel.org/admin/internal/api/read_api_creds').done(function(creds) {
+        getWithCredentials('https://josh.dev.mixpanel.org/admin/internal/api/read_api_creds').done(function(creds) {
+          debugger;
           var from = moment().subtract(7, 'day').format('YYYY-MM-DD');
           var to = moment().format('YYYY-MM-DD');
           var data = {
