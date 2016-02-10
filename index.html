@@ -543,12 +543,12 @@
           var intervals = Math.abs(newCount - oldCount);
           var intervalLength = (animationLength / intervals)
           for(var i = 1; i <= intervals; i++) {
-            var c = i + 0;
-            setTimeout(function() {
-              debugger;
-              var num = newCount > oldCount ? oldCount + c : oldCount - c;
-              $('.active-users-count').text(num);
-            }, intervalLength * c);
+            (function(interval, intervalLength) {
+              setTimeout(function() {
+                var num = newCount > oldCount ? oldCount + interval : oldCount - interval;
+                $('.active-users-count').text(num);
+              }, intervalLength * interval);
+            })(i, intervalLength);
           }
         })
       }
