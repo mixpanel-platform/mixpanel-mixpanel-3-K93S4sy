@@ -509,8 +509,8 @@
           xhr.setRequestHeader ("Authorization", "Basic " + btoa(MP.api.apiSecret));
         },
         data: {
-          params: {projectTimeOffset: -8},
-          script: $("#activeUsersQuery").html()
+          params: JSON.stringify({projectTimeOffset: -8}),
+          script: $.trim($("#activeUsersQuery").html())
         },
         success: function (resp) {
           console.log(resp);
