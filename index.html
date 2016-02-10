@@ -376,6 +376,7 @@
     </style>
   </head>
   <body class="mixpanel-platform-body">
+    <div>There are currently <span class=".active-users"></span> users on Mixpanel</div>
     <div class="top">
         <ul class="nav nav-tabs">
           <li role="presentation" data-section="general" class="active"><a href="#">General/Business</a></li>
@@ -497,17 +498,13 @@
    
     <script>
     
-    
-    var getActiveUsers = function() {
-      var today = moment().format('YYYY-MM-DD');
-      var data = {
-        params: JSON.stringify({projectTimeOffset: -8, from_date: today, to_date: today}),
-        script: $.trim($("#activeUsersQuery").html()),
-      }
-      // compute sig
-      data.api_key = MP.api.apiKey;
-      var utcNow = new Date().getTime();
-      data.expire = Math.ceil(utcNow / 1000) + 60 * 60; // 1 hour expiry
+    var signData = function(origData) {
+      data = _.extend({
+        api_key: MP.api.apiKey,
+        expire: Math.ceil((new Date().getTime()) / 1000) + 60 * 60; // 1 hour expiry
+      }, origData)
+      
+      // sign
       var paramNames = _.keys(data).sort();
       var sigString = _.reduce(paramNames, function(memo, key) {
         if (_.isUndefined(data[key])) {
@@ -517,23 +514,26 @@
       }, '');
       sigString += MP.api.apiSecret;
       data.sig = hex_md5(sigString);
-     debugger;
-      $.post("https://mixpanel.com/api/2.0/custom_query_v1", data, function(resp) {
-        console.log(resp);
-      })
-    }
+      
+      return data;
+    };
+    
+    
     
     MP.api.on('mpplatform.credentialsRegistered', function() {
-      getActiveUsers();
-      // setInterval(function() {
-      //   var today = moment().format('YYYY-MM-DD');
-      //   var params = ;
-      //   var script = ;
-      //   MP.api.custom_query(script, params).done(function(resp) {
-      //     $('.activeUsers').text(parseInt(resp[0]));
-      //   })
-      // }, 10000);
+      var getActiveUsers = function() {
+        var today = moment().format('YYYY-MM-DD');
+        var data = {
+          params: JSON.stringify({projectTimeOffset: -8, from_date: today, to_date: today}),
+          script: $.trim($("#activeUsersQuery").html()),
+        }
+        
+        $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData(data), function(resp) {
+          $('.active-users').text(parseInt(resp[0]));
+        })
+      }
       
+      setInterval(getActiveUsers, 2000);
     });
        
 
