@@ -537,7 +537,7 @@
         
         $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData(data), function(resp) {
           var newCount = parseInt(resp[0]);
-          var oldCount = $('.active-users').text();
+          var oldCount = $('.active-users').text() || 0;
           var animationLength = 1000 // milis
           var intervals = Math.abs(newCount - oldCount);
           var intervalLength = (intervalLength / animationLength)
