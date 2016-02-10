@@ -561,8 +561,10 @@
     <script>
     
     var signData = function(origData, apiKey, apiSecret) {
+      apiKey = apiKey || MP.api.apiKey;
+      apiSecret = apiSecret || MP.api.apiSecret;
       data = _.extend({
-        api_key: apiKey || MP.api.apiKey,
+        api_key: apiKey,
         expire: Math.ceil((new Date().getTime()) / 1000) + 60 * 60 // 1 hour expiry
       }, origData)
       
@@ -574,7 +576,7 @@
         }
         return memo + key + '=' + data[key];
       }, '');
-      sigString += apiSecret || MP.api.apiSecret;
+      sigString += apiSecret;
       data.sig = hex_md5(sigString);
       
       return data;
@@ -722,10 +724,10 @@
             withCredentials: true
           }
         }).done(function(creds) {
-          var from = moment().format('YYYY-MM-DD');
-          var to = moment().subtract(7, 'day').format('YYYY-MM-DD');
+          var from = moment().subtract(7, 'day').format('YYYY-MM-DD');
+          var to = moment().format('YYYY-MM-DD');
           var data = {
-            params: {from_date: from, to_date: to},
+            params: JSON.stringify({from_date: from, to_date: to}),
             script: $.trim($("#medianQueriesQuery").html()),
           }
           $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData(data, creds.apiKey, creds.apiSecret), function(resp) {
