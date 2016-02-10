@@ -485,7 +485,7 @@
       var today = (new Date()).toISOString().split("T")[0];
       var nowUTC = (new Date()).getTime();
       var activityWindow = 5 * 60 * 1000;
-      
+      debugger;
       function main() {
           return Events({from_date: '2016-02-08', to_date: today, event_selectors: [{event: "Viewed report"}]})
               .filter(function(event) {
