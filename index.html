@@ -484,7 +484,8 @@
     <script type="text/cq" id="activeUsersQuery">
       var today = (new Date()).toISOString().split("T")[0];
       var nowUTC = (new Date()).getTime();
-      var activityWindow = 5 * 60 * 1000 // 5 minutes
+      var activityWindow = 5 * 60 * 1000; // 5 minutes
+      
       function main() {
           return Events({from_date: today, to_date: today, event_selectors: [{event: "Viewed report"}]})
               .filter(function(event) {
