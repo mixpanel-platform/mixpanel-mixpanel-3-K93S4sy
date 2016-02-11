@@ -774,17 +774,18 @@
         
         // notifications sent
         getWithCredentials('https://josh.dev.mixpanel.org/admin/internal/api/project_credentials', {token: 'f62ef2c5024fcea2777c87f945808a73'}).done(function(creds) {
-        var data = _.extend(globalParams, {
-          event: "notification",
-          on: "properties[\"message_type\"]"
-        })
-        
-        $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function() {
-          $('.chart.notifications-sent .body').MPChart('setData', results);
-        })
-       
-      });
-    };
+          var data = _.extend(globalParams, {
+            event: "notification",
+            on: "properties[\"message_type\"]"
+          })
+          
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function() {
+            $('.chart.notifications-sent .body').MPChart('setData', results);
+          })
+         
+        });
+      }
+    }
     
     var runQuery = function() {
       return sections[$('.nav-tabs li.active').data('section')]();
