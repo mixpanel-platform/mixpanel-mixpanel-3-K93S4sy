@@ -496,7 +496,17 @@
         <div class="body"></div>
       </div>
     </div>
-    <div class="charts section people" style="display: none;">people</div>
+    <div class="charts section people" style="display: none;">
+      <div class="chart report-notifications-sent">
+        <div class="header">
+          <div class="title">Notifications sent by type</div>
+          <div class="help-tip">
+      			<p class="tooltip">Uses the "Mixpanel notifications" project's "notification" event</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
+    </div>
   
     <script type="text/cq" id="activeUsersQuery">
       var nowUTC = (new Date()).getTime();
@@ -730,7 +740,7 @@
           });
           
         // median queries
-        getWithCredentials('https://josh.dev.mixpanel.org/admin/internal/api/read_api_creds').done(function(creds) {
+        getWithCredentials('https://josh.dev.mixpanel.org/admin/internal/api/project_credentials', {token: '0dbe7190cce5983da081f9dfe575477c'}).done(function(creds) {
           var from = moment().subtract(7, 'day').format('YYYY-MM-DD');
           var to = moment().format('YYYY-MM-DD');
           var data = {
@@ -752,7 +762,27 @@
       },
       
       'people': function() {
+        var unit = $('.unit-select').val();
+        var intervals = $('.intervals-input').val();
+        var startDate = moment().subtract(intervals, unit);
+        var endDate = moment();
+        var globalParams = {
+          unit: unit,
+          from: startDate,
+          to: endDate
+        }
         
+        // notifications sent
+        getWithCredentials('https://josh.dev.mixpanel.org/admin/internal/api/project_credentials', {token: 'f62ef2c5024fcea2777c87f945808a73'}).done(function(creds) {
+        var data = _.extend(globalParams, {
+          event: "notification"
+          on: 'properties["message_type"]'
+        })
+        
+        $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function() {
+          $('.chart.notifications-sent .body').MPChart('setData', results);
+        })
+       
       }
     };
     
