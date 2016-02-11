@@ -715,8 +715,8 @@
         getWithCredentials('https://mixpanel.com/admin/internal/api/plan_changes',
           {
             unit: unit,
-            from: startDate.format('YYYY-MM-DD'),
-            to: endDate.format('YYYY-MM-DD')
+            from: startDate.startOf('month').format('YYYY-MM-DD'),
+            to: endDate.endOf('month').format('YYYY-MM-DD')
           }
         )
           .done(function(results) {
