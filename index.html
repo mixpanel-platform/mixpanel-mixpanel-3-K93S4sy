@@ -656,7 +656,7 @@
         })
       }
       
-      getWithCredentials("https://josh.dev.mixpanel.org/admin/internal/api/tz_offset", {tz: "America/Los_Angeles"})
+      getWithCredentials("https://mixpanel.com/admin/internal/api/tz_offset", {tz: "America/Los_Angeles"})
         .done(getActiveUsers);
       
       // setInterval(getActiveUsers, 5000);
@@ -776,7 +776,7 @@
           });
           
         // median queries
-        getWithCredentials('https://josh.dev.mixpanel.org/admin/internal/api/project_credentials', {project_id: 620033}).done(function(creds) {
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 620033}).done(function(creds) {
           var from = moment().subtract(7, 'day').format('YYYY-MM-DD');
           var to = moment().format('YYYY-MM-DD');
           var data = {
@@ -809,7 +809,7 @@
         }
         
         // notifications sent
-        getWithCredentials('https://josh.dev.mixpanel.org/admin/internal/api/project_credentials', {project_id: 258190}).done(function(creds) {
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 258190}).done(function(creds) {
           var data = _.extend(globalParams, {
             event: "notification",
             on: "properties[\"message_type\"]"
@@ -822,7 +822,7 @@
         });
         
         // campaign state
-        getWithCredentials('https://josh.dev.mixpanel.org/admin/internal/api/project_credentials', {project_id: 875635}).done(function(creds) {
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 875635}).done(function(creds) {
           var data = _.extend(globalParams, {
             event: "Campaign state",
             on: "properties[\"status\"]"
