@@ -768,8 +768,8 @@
         var endDate = moment();
         var globalParams = {
           unit: unit,
-          from: startDate,
-          to: endDate
+          from: startDate.format('YYYY-MM-DD'),
+          to: endDate.format('YYYY-MM-DD')
         }
         
         // notifications sent
