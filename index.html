@@ -506,6 +506,15 @@
         </div>
         <div class="body"></div>
       </div>
+      <div class="chart report-campaign-state">
+        <div class="header">
+          <div class="title">Campaign states by type</div>
+          <div class="help-tip">
+      			<p class="tooltip">We run a daily cron that sends an event for each campaign that represents the current state.</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
     </div>
   
     <script type="text/cq" id="activeUsersQuery">
@@ -784,6 +793,21 @@
           })
          
         });
+        
+        // campaign state
+        getWithCredentials('https://josh.dev.mixpanel.org/admin/internal/api/project_credentials', {token: 'b0f6ffc88cd7fcfe2b71f7b0c518998e'}).done(function(creds) {
+          var data = _.extend(globalParams, {
+            event: "Campaign state",
+            on: "properties[\"message_type\"]"
+          })
+          
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
+            $('.chart.report-campaign-state .body').MPChart('setData', results.data.values);
+          })
+         
+        });
+        
+        
       }
     }
     
