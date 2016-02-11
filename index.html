@@ -768,8 +768,8 @@
         var endDate = moment();
         var globalParams = {
           unit: unit,
-          from: startDate.format('YYYY-MM-DD'),
-          to: endDate.format('YYYY-MM-DD')
+          from_date: startDate.format('YYYY-MM-DD'),
+          to_date: endDate.format('YYYY-MM-DD')
         }
         
         // notifications sent
@@ -780,7 +780,7 @@
           })
           
           $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
-            $('.chart.notifications-sent .body').MPChart('setData', results);
+            $('.chart.report-notifications-sent .body').MPChart('setData', results);
           })
          
         });
