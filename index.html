@@ -508,7 +508,7 @@
       </div>
       <div class="chart report-campaign-state">
         <div class="header">
-          <div class="title">Campaign states by paused (false means active)</div>
+          <div class="title">Campaign states by status</div>
           <div class="help-tip">
       			<p class="tooltip">We run a daily cron that sends an event for each campaign that represents the current state.</p>
       		</div>
@@ -816,7 +816,7 @@
         getWithCredentials('https://josh.dev.mixpanel.org/admin/internal/api/project_credentials', {token: 'b0f6ffc88cd7fcfe2b71f7b0c518998e'}).done(function(creds) {
           var data = _.extend(globalParams, {
             event: "Campaign state",
-            on: "properties[\"paused\"]"
+            on: "properties[\"status\"]"
           })
           
           $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
