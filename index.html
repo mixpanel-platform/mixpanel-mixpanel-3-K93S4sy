@@ -780,7 +780,7 @@
           })
           
           $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
-            $('.chart.report-notifications-sent .body').MPChart('setData', results);
+            $('.chart.report-notifications-sent .body').MPChart('setData', results.data.values);
           })
          
         });
