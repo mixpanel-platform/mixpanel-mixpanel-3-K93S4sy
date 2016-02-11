@@ -822,7 +822,8 @@
           $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
             $('.chart.report-campaign-state .body').MPChart('setData', results.data.values);
           })
-          
+        });
+        
           // total report views
         MP.api.segment('Viewed report', _.extend({
           where: 'not "@mixpanel.com" in user["$email"] and (properties["tab"] == "explore" or properties["tab"] == "revenue" or properties["tab"] == "surveys" or properties["tab"] == "triggers" or properties["tab"] == "analytics")',
@@ -842,7 +843,6 @@
             $('.people .chart.report-views-unique .body').MPChart('setData', results);
           });
          
-        });
         
         
       }
