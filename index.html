@@ -825,7 +825,8 @@
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 876479}).done(function(creds) {
           var data = _.extend(globalParams, {
             event: "Campaign state",
-            on: "properties[\"status\"]"
+            on: "properties[\"status\"]",
+            type: "unique"
           })
           
           $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
