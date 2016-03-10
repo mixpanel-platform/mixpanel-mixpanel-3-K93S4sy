@@ -428,9 +428,9 @@
       
       <div class="chart integrations">
         <div class="header">
-          <div class="title">New integrations</div>
+          <div class="title">Real integrations</div>
           <div class="help-tip">
-      			<p class="tooltip">The total count of new integrations using the "first integration date" property on user profiles where their "Current tally" is greater than 0.</p>
+      			<p class="tooltip">The total count of new integrations using the "first integration date" property on user profiles where their "Current tally" is greater than 100.</p>
       		</div>
         </div>
         <div class="body"></div>
@@ -731,7 +731,7 @@
           from_date: startDate.format('YYYY-MM-DD'),
           to_date: endDate.format('YYYY-MM-DD'),
           x_unit: unit,
-          where: 'properties["Current tally"] > 0'
+          where: 'properties["Current tally"] > 100'
         })
           .done(function(resp) { 
             data = {};
