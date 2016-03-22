@@ -705,7 +705,7 @@
         // active users query
         MP.api.segment('Viewed report', _.extend({
           type: 'unique', 
-          where: 'user["Current tally"] > 500'
+          where: 'user["Current tally"] > 500 and not "@mixpanel.com" in user["$email"]'
         }, globalParams))
           .done(function(results) {
             $('.chart.active-users .body').MPChart('setData', results);
@@ -731,7 +731,7 @@
           from_date: startDate.format('YYYY-MM-DD'),
           to_date: endDate.format('YYYY-MM-DD'),
           x_unit: unit,
-          where: 'properties["Current tally"] > 100'
+          where: 'properties["Current tally"] > 100 and not "@mixpanel.com" in properties["$email"]'
         })
           .done(function(resp) { 
             data = {};
