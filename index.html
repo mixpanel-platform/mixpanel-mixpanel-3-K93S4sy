@@ -545,11 +545,11 @@
       </div>
     </div>
     <div class="charts section systems" style="display: none;">
-      <div class="chart report-notifications-sent">
+      <div class="chart report-track-events">
         <div class="header">
-          <div class="title">Notifications sent by type</div>
+          <div class="title">Track events by project</div>
           <div class="help-tip">
-      			<p class="tooltip">Uses the "Mixpanel notifications" project's "notification" event</p>
+      			<p class="tooltip">The number of track events segmented by project id</p>
       		</div>
         </div>
         <div class="body"></div>
@@ -866,6 +866,31 @@
          
         
         
+      },
+      
+      'systems': function() {
+        var unit = $('.unit-select').val();
+        var intervals = $('.intervals-input').val();
+        var startDate = moment().subtract(intervals, unit);
+        var endDate = moment();
+        var globalParams = {
+          unit: unit,
+          from_date: startDate.format('YYYY-MM-DD'),
+          to_date: endDate.format('YYYY-MM-DD')
+        }
+        
+        // track events by project id
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 29988}).done(function(creds) {
+          var data = _.extend(globalParams, {
+            event: "track_events",
+            on: "properties[\"project_id\"]",
+            type: "count"
+          })
+          
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
+            $('.chart.report-track-events .body').MPChart('setData', results.data.values);
+          })
+        });
       }
     }
     
