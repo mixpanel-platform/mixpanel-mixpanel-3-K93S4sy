@@ -599,11 +599,20 @@
         </div>
         <div class="body"></div>
       </div>
-      <div class="chart report-slow-queries">
+      <div class="chart report-arb-slow-queries">
         <div class="header">
-          <div class="title">slow queries by project</div>
+          <div class="title">slow arb queries by origin</div>
           <div class="help-tip">
-      			<p class="tooltip">the number of slow queries by project</p>
+      			<p class="tooltip">the number of slow arb queries by origin</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
+      <div class="chart report-engage-slow-queries">
+        <div class="header">
+          <div class="title">slow engage queries by origin</div>
+          <div class="help-tip">
+      			<p class="tooltip">the number of slow engage queries by origin</p>
       		</div>
         </div>
         <div class="body"></div>
@@ -938,7 +947,6 @@
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 29988}).done(function(creds) {
           var data = _.extend(globalParams, {
             event: "track_events",
-            type: "general",
             on: "number(properties[\"count\"])"
             
           })
@@ -952,7 +960,6 @@
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 399213}).done(function(creds) {
           var data = _.extend(globalParams, {
             event: "people_updates",
-            type: "general",
             on: "number(properties[\"count\"])"
           })
           
@@ -965,7 +972,6 @@
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 486853}).done(function(creds) {
           var data = _.extend(globalParams, {
             event: "decide_requests",
-            type: "general",
             on: "number(properties[\"count\"])"
             
           })
@@ -998,6 +1004,34 @@
           
           $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
             $('.chart.report-engage-queries-origin .body').MPChart('setData', results.data.values);
+          })
+        });
+        
+        // slow arb DQS queries 
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 29988}).done(function(creds) {
+          var data = _.extend(globalParams, {
+            event: "query",
+            type: "general",
+            on: "properties[\"query_origin\"]",
+            where: "properties[\"elapsed\"]>5000"
+          })
+          
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
+            $('.chart.report-arb-slow-queries .body').MPChart('setData', results.data.values);
+          })
+        });
+        
+        // slow engage DQS queries 
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 399213}).done(function(creds) {
+          var data = _.extend(globalParams, {
+            event: "query",
+            type: "general",
+            on: "properties[\"query_origin\"]",
+            where: "properties[\"elapsed\"]>5000"
+          })
+          
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
+            $('.chart.report-engage-slow-queries .body').MPChart('setData', results.data.values);
           })
         });
       }
