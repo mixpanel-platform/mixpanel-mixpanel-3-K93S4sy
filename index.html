@@ -980,6 +980,28 @@
           })
         });
         
+         // jql vs non-jql queries
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 29988}).done(function(creds) {
+          var data_custom = _.extend(globalParams, {
+            event: "subquery",
+            type: "general",
+            where: "(properties[\"type\"]==\"custom-v1\")"
+          })
+          
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data_custom, creds.apiKey, creds.apiSecret)).done(function(results_custom_v1) {
+            var data_non_custom = _.extend(globalParams, {
+              event: "subquery",
+              type: "general",
+              where: "(properties[\"type\"]!=\"custom-v1\")"
+            })
+            $.get("https://mixpanel.com/api/2.0/segmentation", signData(data_non_custom, creds.apiKey, creds.apiSecret)).done(function(results_not_custom_v1) {
+              $('.chart.report-jql-queries .body').MPChart('setData', {
+                "jql": results_custom_v1.data.values,
+                "non-jql": results_not_custom_v1.data.values
+              });
+            })
+          })
+        });
         // arb LQS queries by origin
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 29988}).done(function(creds) {
           var data = _.extend(globalParams, {
@@ -1034,28 +1056,7 @@
           })
         });
         
-        // jql vs non-jql queries
-        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 29988}).done(function(creds) {
-          var data_custom = _.extend(globalParams, {
-            event: "subquery",
-            type: "general",
-            where: "(properties[\"type\"]==\"custom-v1\")"
-          })
-          
-          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data_custom, creds.apiKey, creds.apiSecret)).done(function(results_custom_v1) {
-            var data_non_custom = _.extend(globalParams, {
-              event: "subquery",
-              type: "general",
-              where: "(properties[\"type\"]==\"custom-v1\")"
-            })
-            $.get("https://mixpanel.com/api/2.0/segmentation", signData(data_non_custom, creds.apiKey, creds.apiSecret)).done(function(results_not_custom_v1) {
-              $('.chart.report-jql-queries .body').MPChart('setData', {
-                "jql": results_custom_v1.data.values,
-                "non-jql": results_not_custom_v1.data.values
-              });
-            })
-          })
-        });
+       
         
       }
     }
