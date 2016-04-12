@@ -547,27 +547,27 @@
     <div class="charts section systems" style="display: none;">
       <div class="chart report-track-events">
         <div class="header">
-          <div class="title">track events by project</div>
+          <div class="title">track events</div>
           <div class="help-tip">
-      			<p class="tooltip">the number of track events segmented by project id</p>
+      			<p class="tooltip">the number of track events</p>
       		</div>
         </div>
         <div class="body"></div>
       </div>
       <div class="chart report-people-updates">
         <div class="header">
-          <div class="title">people updates by project</div>
+          <div class="title">people updates</div>
           <div class="help-tip">
-      			<p class="tooltip">the number of people updates segmented by project id</p>
+      			<p class="tooltip">the number of people updates</p>
       		</div>
         </div>
         <div class="body"></div>
       </div>
       <div class="chart report-decide-queries">
         <div class="header">
-          <div class="title">decide queries by project</div>
+          <div class="title">decide queries</div>
           <div class="help-tip">
-      			<p class="tooltip">the number of decide queries segmented by proejct id</p>
+      			<p class="tooltip">the number of decide queries</p>
       		</div>
         </div>
         <div class="body"></div>
@@ -595,6 +595,15 @@
           <div class="title">jql vs non-jql</div>
           <div class="help-tip">
       			<p class="tooltip">the number of JQL queries vs non-JQL queries</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
+      <div class="chart report-slow-queries">
+        <div class="header">
+          <div class="title">slow queries by project</div>
+          <div class="help-tip">
+      			<p class="tooltip">the number of slow queries by project</p>
       		</div>
         </div>
         <div class="body"></div>
@@ -925,47 +934,43 @@
           to_date: endDate.format('YYYY-MM-DD')
         }
         
-        // track events by project id
+        // track events 
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 29988}).done(function(creds) {
           var data = _.extend(globalParams, {
             event: "track_events",
             type: "general",
-            inner: "number(properties[\"count\"])",
-            outer: "string(properties[\"project_id\"])",
-            action: "sum"
+            on: "number(properties[\"count\"])"
+            
           })
           
-          $.get("https://mixpanel.com/api/2.0/segmentation/multiseg", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
+          $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
             $('.chart.report-track-events .body').MPChart('setData', results.data.values);
           })
         });
         
-        // people updates by project id
+        // people updates 
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 399213}).done(function(creds) {
           var data = _.extend(globalParams, {
             event: "people_updates",
             type: "general",
-            inner: "number(properties[\"count\"])",
-            outer: "string(properties[\"project_id\"])",
-            action: "sum"
+            on: "number(properties[\"count\"])"
           })
           
-          $.get("https://mixpanel.com/api/2.0/segmentation/multiseg", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
+          $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
             $('.chart.report-people-updates .body').MPChart('setData', results.data.values);
           })
         });
         
-        // decide queries by project id
+        // decide queries 
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 486853}).done(function(creds) {
           var data = _.extend(globalParams, {
             event: "decide_requests",
             type: "general",
-            inner: "number(properties[\"count\"])",
-            outer: "string(properties[\"project_id\"])",
-            action: "sum"
+            on: "number(properties[\"count\"])"
+            
           })
           
-          $.get("https://mixpanel.com/api/2.0/segmentation/multiseg", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
+          $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
             $('.chart.report-decide-queries .body').MPChart('setData', results.data.values);
           })
         });
