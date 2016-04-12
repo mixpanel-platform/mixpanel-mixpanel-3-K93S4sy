@@ -547,23 +547,59 @@
     <div class="charts section systems" style="display: none;">
       <div class="chart report-track-events">
         <div class="header">
-          <div class="title">Track events by project</div>
+          <div class="title">track events by project</div>
           <div class="help-tip">
-      			<p class="tooltip">The number of track events segmented by project id</p>
+      			<p class="tooltip">the number of track events segmented by project id</p>
       		</div>
         </div>
         <div class="body"></div>
       </div>
       <div class="chart report-people-updates">
         <div class="header">
-          <div class="title">People updates by project</div>
+          <div class="title">people updates by project</div>
           <div class="help-tip">
-      			<p class="tooltip">The number of people updates segmented by project id</p>
+      			<p class="tooltip">the number of people updates segmented by project id</p>
       		</div>
         </div>
         <div class="body"></div>
       </div>
-
+      <div class="chart report-decide-queries">
+        <div class="header">
+          <div class="title">decide queries by project</div>
+          <div class="help-tip">
+      			<p class="tooltip">the number of decide queries segmented by proejct id</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
+      <div class="chart report-arb-queries-origin">
+        <div class="header">
+          <div class="title">arb LQS query count by origin</div>
+          <div class="help-tip">
+      			<p class="tooltip">the number of arb LQS queries segmented by origin</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
+      <div class="chart report-engage-queries-origin">
+        <div class="header">
+          <div class="title">engage LQS query count by origin</div>
+          <div class="help-tip">
+      			<p class="tooltip">the number of engage LQS queries segmented by origin</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
+      <div class="chart report-jql-query">
+        <div class="header">
+          <div class="title">jql vs non-jql</div>
+          <div class="help-tip">
+      			<p class="tooltip">the number of JQL queries vs non-JQL queries</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
+      
     </div>
     <script type="text/cq" id="activeUsersQuery">
       var nowUTC = (new Date()).getTime();
@@ -916,6 +952,47 @@
           
           $.get("https://mixpanel.com/api/2.0/segmentation/multiseg", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
             $('.chart.report-people-updates .body').MPChart('setData', results.data.values);
+          })
+        });
+        
+        // decide queries by project id
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 486853}).done(function(creds) {
+          var data = _.extend(globalParams, {
+            event: "decide_requests",
+            type: "general",
+            inner: "number(properties[\"count\"])",
+            outer: "string(properties[\"project_id\"])",
+            action: "sum"
+          })
+          
+          $.get("https://mixpanel.com/api/2.0/segmentation/multiseg", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
+            $('.chart.report-decide-queries .body').MPChart('setData', results.data.values);
+          })
+        });
+        
+        // arb LQS queries by origin
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 29988}).done(function(creds) {
+          var data = _.extend(globalParams, {
+            event: "subquery",
+            type: "general",
+            on: "properties[\"query_origin\"]"
+          })
+          
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
+            $('.chart.report-arb-queries-origin .body').MPChart('setData', results.data.values);
+          })
+        });
+        
+        // engage LQS queries by origin
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 399213}).done(function(creds) {
+          var data = _.extend(globalParams, {
+            event: "subquery",
+            type: "general",
+            on: "properties[\"query_origin\"]"
+          })
+          
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
+            $('.chart.report-engage-queries-origin .body').MPChart('setData', results.data.values);
           })
         });
       }
