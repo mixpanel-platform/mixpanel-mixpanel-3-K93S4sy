@@ -945,7 +945,7 @@
         
         // track events 
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 29988}).done(function(creds) {
-          var data = _.extend(globalParams, {
+          var data = _.extend({}, globalParams, {
             event: "track_events",
             on: "number(properties[\"count\"])"
           })
@@ -957,7 +957,7 @@
         
         // people updates 
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 399213}).done(function(creds) {
-          var data = _.extend(globalParams, {
+          var data = _.extend({}, globalParams, {
             event: "people_updates",
             on: "number(properties[\"count\"])"
           })
@@ -969,7 +969,7 @@
         
         // decide queries 
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 486853}).done(function(creds) {
-          var data = _.extend(globalParams, {
+          var data = _.extend({}, globalParams, {
             event: "decide_requests",
             on: "number(properties[\"count\"])"
             
@@ -980,16 +980,16 @@
           })
         });
         
-         // jql vs non-jql queries
+        // jql vs non-jql queries
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 29988}).done(function(creds) {
-          var data_custom = _.extend(globalParams, {
+          var data_custom = _.extend({}, globalParams, {
             event: "subquery",
             type: "general",
             where: "(properties[\"type\"]==\"custom-v1\")"
           })
           
           $.get("https://mixpanel.com/api/2.0/segmentation", signData(data_custom, creds.apiKey, creds.apiSecret)).done(function(results_custom_v1) {
-            var data_non_custom = _.extend(globalParams, {
+            var data_non_custom = _.extend({}, globalParams, {
               event: "subquery",
               type: "general",
               where: "(properties[\"type\"]!=\"custom-v1\")"
@@ -1004,7 +1004,7 @@
         });
         // arb LQS queries by origin
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 29988}).done(function(creds) {
-          var data = _.extend(globalParams, {
+          var data = _.extend({}, globalParams, {
             event: "subquery",
             type: "general",
             on: "properties[\"query_origin\"]"
@@ -1017,7 +1017,7 @@
         
         // engage LQS queries by origin
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 399213}).done(function(creds) {
-          var data = _.extend(globalParams, {
+          var data = _.extend({}, globalParams, {
             event: "subquery",
             type: "general",
             on: "properties[\"query_origin\"]"
@@ -1030,7 +1030,7 @@
         
         // slow arb DQS queries 
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 29988}).done(function(creds) {
-          var data = _.extend(globalParams, {
+          var data = _.extend({}, globalParams, {
             event: "query",
             type: "general",
             on: "properties[\"query_origin\"]",
@@ -1044,7 +1044,7 @@
         
         // slow engage DQS queries 
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 399213}).done(function(creds) {
-          var data = _.extend(globalParams, {
+          var data = _.extend({}, globalParams, {
             event: "query",
             type: "general",
             on: "properties[\"query_origin\"]",
