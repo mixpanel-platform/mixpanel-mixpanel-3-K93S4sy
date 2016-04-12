@@ -996,8 +996,8 @@
             })
             $.get("https://mixpanel.com/api/2.0/segmentation", signData(data_non_custom, creds.apiKey, creds.apiSecret)).done(function(results_not_custom_v1) {
               $('.chart.report-jql-queries .body').MPChart('setData', {
-                "jql": results_custom_v1.data.values,
-                "non-jql": results_not_custom_v1.data.values
+                "jql": results_custom_v1.data.values.subquery,
+                "non-jql": results_not_custom_v1.data.values.subquery
               });
             })
           })
