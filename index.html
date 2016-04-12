@@ -963,7 +963,7 @@
           })
           
           $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
-            $('.chart.report-people-updates .body').MPChart('setData', results);
+            $('.chart.report-people-updates .body').MPChart('setData', results.results);
           })
         });
         
@@ -976,7 +976,7 @@
           })
           
           $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
-            $('.chart.report-decide-queries .body').MPChart('setData', results);
+            $('.chart.report-decide-queries .body').MPChart('setData', results.results);
           })
         });
         
