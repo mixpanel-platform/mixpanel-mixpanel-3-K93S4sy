@@ -1039,14 +1039,16 @@
           var data = _.extend(globalParams, {
             event: "subquery",
             type: "general",
-            where: "(properties[\"type\"]==\"custom-v1\")"
+            where: "(properties[\"type\"]==\"custom-v1\")",
+            on: ""
           })
           
           $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_custom_v1) {
             var data1 = _.extend(globalParams, {
               event: "subquery",
               type: "general",
-              where: "(properties[\"type\"]!=\"custom-v1\")"
+              where: "(properties[\"type\"]!=\"custom-v1\")",
+              on: ""
             })
             $.get("https://mixpanel.com/api/2.0/segmentation", signData(data1, creds.apiKey, creds.apiSecret)).done(function(results_not_custom_v1) {
               $('.chart.report-jql-queries .body').MPChart('setData', {
