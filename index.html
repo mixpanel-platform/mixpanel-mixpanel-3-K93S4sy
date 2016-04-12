@@ -402,6 +402,7 @@
           <li role="presentation" data-section="general" class="active"><a href="#">General/Business</a></li>
           <li role="presentation" data-section="core"><a href="#">Core product</a></li>
           <li role="presentation" data-section="people"><a href="#">People/notifications</a></li>
+          <li role="presentation" data-section="systems"><a href="#">Systems</a></li>
         </ul>
     </div>
      
@@ -543,7 +544,17 @@
         <div class="body"></div>
       </div>
     </div>
-  
+    <div class="charts section systems" style="display: none;">
+      <div class="chart report-notifications-sent">
+        <div class="header">
+          <div class="title">Notifications sent by type</div>
+          <div class="help-tip">
+      			<p class="tooltip">Uses the "Mixpanel notifications" project's "notification" event</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
+    </div>
     <script type="text/cq" id="activeUsersQuery">
       var nowUTC = (new Date()).getTime();
       var activityWindow = 5 * 60 * 1000;
