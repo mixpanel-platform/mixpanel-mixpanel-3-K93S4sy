@@ -590,7 +590,7 @@
         </div>
         <div class="body"></div>
       </div>
-      <div class="chart report-jql-query">
+      <div class="chart report-jql-queries">
         <div class="header">
           <div class="title">jql vs non-jql</div>
           <div class="help-tip">
@@ -1033,6 +1033,30 @@
             $('.chart.report-engage-slow-queries .body').MPChart('setData', results.data.values);
           })
         });
+        
+        // jql vs non-jql queries
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 29988}).done(function(creds) {
+          var data = _.extend(globalParams, {
+            event: "subquery",
+            type: "general",
+            where: "properties[\"type\"]==\"custom-v1\""
+          })
+          
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_custom_v1) {
+            var data = _.extend(globalParams, {
+              event: "subquery",
+              type: "general",
+              where: "properties[\"type\"]!=\"custom-v1\""
+            })
+            $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_not_custom_v1) {
+              $('.chart.report-jql-queries .body').MPChart('setData', {
+                "jql": results_custom_v1.results,
+                "non-jql": results_not_custom_v1.results
+              });
+            })
+          })
+        });
+        
       }
     }
     
