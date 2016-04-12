@@ -893,11 +893,13 @@
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 29988}).done(function(creds) {
           var data = _.extend(globalParams, {
             event: "track_events",
-            on: "properties[\"project_id\"]",
-            type: "count"
+            type: "general",
+            inner: "number(properties[\"count\"])",
+            outer: "string(properties[\"project_id\"])",
+            action: "sum"
           })
           
-          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
+          $.get("https://mixpanel.com/api/2.0/segmentation/multiseg", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
             $('.chart.report-track-events .body').MPChart('setData', results.data.values);
           })
         });
@@ -906,11 +908,13 @@
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 399213}).done(function(creds) {
           var data = _.extend(globalParams, {
             event: "people_updates",
-            on: "properties[\"project_id\"]",
-            type: "count"
+            type: "general",
+            inner: "number(properties[\"count\"])",
+            outer: "string(properties[\"project_id\"])",
+            action: "sum"
           })
           
-          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
+          $.get("https://mixpanel.com/api/2.0/segmentation/multiseg", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
             $('.chart.report-people-updates .body').MPChart('setData', results.data.values);
           })
         });
