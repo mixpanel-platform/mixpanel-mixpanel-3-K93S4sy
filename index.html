@@ -948,11 +948,10 @@
           var data = _.extend(globalParams, {
             event: "track_events",
             on: "number(properties[\"count\"])"
-            
           })
           
           $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
-            $('.chart.report-track-events .body').MPChart('setData', results.data.values);
+            $('.chart.report-track-events .body').MPChart('setData', results);
           })
         });
         
@@ -964,7 +963,7 @@
           })
           
           $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
-            $('.chart.report-people-updates .body').MPChart('setData', results.data.values);
+            $('.chart.report-people-updates .body').MPChart('setData', results);
           })
         });
         
@@ -977,7 +976,7 @@
           })
           
           $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
-            $('.chart.report-decide-queries .body').MPChart('setData', results.data.values);
+            $('.chart.report-decide-queries .body').MPChart('setData', results);
           })
         });
         
