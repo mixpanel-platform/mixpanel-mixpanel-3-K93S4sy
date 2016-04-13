@@ -911,7 +911,7 @@
         });
         
         $.when(d1, d2).done(function(notifs, inApp) {
-          debugger;
+          delete inApp.data.values.undefined; // from 2014... probably bad tracking
           var chartData =  Object.assign({}, notifs.data.values, inApp.data.values);
           $('.chart.report-notifications-sent .body').MPChart('setData', chartData);
         });
