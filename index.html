@@ -911,6 +911,7 @@
         });
         
         $.when(d1, d2).done(function(notifs, inApp) {
+          debugger;
           var chartData =  Object.assign({}, notifs.data.values, inApp.data.values);
           $('.chart.report-notifications-sent .body').MPChart('setData', chartData);
         });
