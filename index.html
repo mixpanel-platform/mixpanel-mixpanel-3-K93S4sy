@@ -883,6 +883,9 @@
           to_date: endDate.format('YYYY-MM-DD')
         }
         
+        var d1 = $.Deferred();
+        var d2 = $.Deferred();
+        
         // notifications sent
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 258190}).done(function(creds) {
           var data = _.extend(globalParams, {
@@ -891,9 +894,25 @@
           })
           
           $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
-            $('.chart.report-notifications-sent .body').MPChart('setData', results.data.values);
+            d1.resolve(results);
           })
-         
+        });
+        
+        // in-app (web & mobile) notifications sent
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 350447}).done(function(creds) {
+          var data = _.extend(globalParams, {
+            event: "Notification Shown",
+            on: "properties[\"message_type\"]"
+          })
+          
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
+            d2.resolve(results);
+          })
+        });
+        
+        $.when(d1, d2).done(function(notifs, inApp) {
+          var chartData =  Object.assign({}, notifs.data.values, inApp.data.values);
+          $('.chart.report-notifications-sent .body').MPChart('setData', chartData);
         });
         
         // campaign state
