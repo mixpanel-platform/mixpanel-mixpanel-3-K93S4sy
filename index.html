@@ -1114,6 +1114,10 @@
         $tab.addClass('active');
         $('.section').hide();
         $('.section.' + $tab.data('section')).show();
+        if ($tab.data('section') == "systems") {
+          $('.unit-select').val('day')
+          $('.intervals-input').val('5')
+        }
         runQuery();
       });
       
