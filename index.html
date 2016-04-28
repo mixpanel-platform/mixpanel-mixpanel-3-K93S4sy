@@ -574,9 +574,18 @@
       </div>
       <div class="chart report-read-api-dqs">
         <div class="header">
-          <div class="title">read api</div>
+          <div class="title">read api errors and timeouts</div>
           <div class="help-tip">
       			<p class="tooltip">read api request errors</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
+       <div class="chart report-read-api-slow-projects">
+        <div class="header">
+          <div class="title">read api slow by project</div>
+          <div class="help-tip">
+      			<p class="tooltip">read api slow by project</p>
       		</div>
         </div>
         <div class="body"></div>
@@ -1098,6 +1107,19 @@
           })
         });
         
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 620033}).done(function(creds) {
+          // https://mixpanel.com/api/2.0/segmentation?event=API+request&type=general&where=properties["elapsed"]+>+5000&limit=150&on=string(properties["project+id"])&selected_from_date=2016-04-25&to_date=2016-04-27+23:00:00&from_date=2016-04-22&unit=hour
+          var data = _.extend({}, globalParams, {
+            event: "API request",
+            type: "general",
+            where: "properties[\"elapsed\"]>5000",
+            on: "string(properties[\"project id\"])"
+          })
+          
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
+            $('.chart.report-read-api-slow-projects .body').MPChart('setData', results.data.values);
+          })
+        });
       }
     }
     
