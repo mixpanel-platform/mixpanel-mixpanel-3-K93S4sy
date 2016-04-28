@@ -572,6 +572,15 @@
         </div>
         <div class="body"></div>
       </div>
+      <div class="chart report-read-api-dqs">
+        <div class="header">
+          <div class="title">read api</div>
+          <div class="help-tip">
+      			<p class="tooltip">read api request errors</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
       <div class="chart report-arb-queries-origin">
         <div class="header">
           <div class="title">arb LQS query count by origin</div>
@@ -1076,7 +1085,18 @@
           })
         });
         
-       
+       getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 620033}).done(function(creds) {
+         // https://mixpanel.com/api/2.0/segmentation?event=API+request&type=general&where=defined+(properties["error"])+or+properties["elapsed"]+>+5000&selected_from_date=2016-04-25&to_date=2016-04-27+23:00:00&from_date=2016-04-22&unit=hour
+          var data = _.extend({}, globalParams, {
+            event: "API request",
+            type: "general",
+            where: "properties[\"elapsed\"]>5000 or properties[\"error\"]"
+          })
+          
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
+            $('.chart.report-read-api-dqs .body').MPChart('setData', results.data.values);
+          })
+        });
         
       }
     }
@@ -1116,6 +1136,7 @@
         $('.section.' + $tab.data('section')).show();
         if ($tab.data('section') == "systems") {
           $('.unit-select').val('day')
+          $('.intervals-input').val('5')
         }
         runQuery();
       });
