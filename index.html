@@ -583,9 +583,9 @@
       </div>
        <div class="chart report-read-api-slow-projects">
         <div class="header">
-          <div class="title">read api slow by project</div>
+          <div class="title">Number of slow queries by project</div>
           <div class="help-tip">
-      			<p class="tooltip">read api slow by project</p>
+      			<p class="tooltip">The top projects by the number of slow queries (latency more than 5 seconds) as seen by the read api. Lower is better. (<a target="_blank" href="https://mixpanel.com/report/620033/segmentation/#action:segment,arb_event:%27API%20request%27,bool_op:or,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,filter:%28operand:%275000%27,operator:%3E%29,property:%28name:elapsed,source:properties,type:number%29,selected_property_type:number,type:number%29,%28dropdown_tab_index:0,property:%28name:%27project%20id%27,source:properties,type:number%29,selected_property_type:number,type:string%29%29,segment_type:string,to_date:-1,type:general,unit:hour">slow queries</a>)</p>
       		</div>
         </div>
         <div class="body"></div>
@@ -1047,6 +1047,7 @@
           })
         });
         
+        // errors, timeouts and slow queries from the api
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 620033}).done(function(creds) {
           var data = _.extend({}, globalParams, {
             event: "API request",
@@ -1063,7 +1064,7 @@
               var data = _.extend({}, globalParams, {
                 event: "API request",
                 type: "general",
-                where: "properties[\"error\"]"
+                where: "properties[\"error\"] == \"unknown\""
               })
               $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(errors) {
                 $('.chart.report-read-api-dqs .body').MPChart('setData', {
@@ -1078,6 +1079,7 @@
           })
         });
         
+        // slow queries by project
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 620033}).done(function(creds) {
           var data = _.extend({}, globalParams, {
             event: "API request",
@@ -1128,7 +1130,7 @@
         $('.section.' + $tab.data('section')).show();
         if ($tab.data('section') == "systems") {
           $('.unit-select').val('day')
-          $('.intervals-input').val('5')
+          $('.intervals-input').val('14')
         }
         runQuery();
       });
