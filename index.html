@@ -1062,7 +1062,7 @@
             $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(timeouts) {
               $('.chart.report-read-api-dqs .body').MPChart('setData', {
                 'slow queries': slow.data.values["API request"],
-                'timeouts': timeouts.data.valuesp["API request"]
+                'timeouts': timeouts.data.values["API request"]
               });
             })
             
