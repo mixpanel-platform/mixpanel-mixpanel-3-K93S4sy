@@ -1016,7 +1016,7 @@
             $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_not_jql) {
               $('.chart.report-jql-queries .body').MPChart('setData', {
                 "jql": results_jql.data.values["API request"],
-                "non-jql": results_non_jql.data.values["API request"]
+                "non jql": results_not_jql.data.values["API request"]
               });
             })
           })
