@@ -610,9 +610,9 @@
       </div>
       <div class="chart report-jql-queries">
         <div class="header">
-          <div class="title">jql vs non-jql</div>
+          <div class="title">The number of JQL vs non-JQL queries</div>
           <div class="help-tip">
-      			<p class="tooltip">the number of JQL queries vs non-JQL queries</p>
+      			<p class="tooltip">The number of JQL vs non-JQL queries as seen by the read api. We want the number of JQL queries to increase and the number of non-JQL queries to decrease proportionately. ()</p>
       		</div>
         </div>
         <div class="body"></div>
@@ -1000,23 +1000,23 @@
         });
         
         // jql vs non-jql queries
-        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 29988}).done(function(creds) {
-          var data_custom = _.extend({}, globalParams, {
-            event: "subquery",
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 620033}).done(function(creds) {
+          var data = _.extend({}, globalParams, {
+            event: "API request",
             type: "general",
-            where: "(properties[\"type\"]==\"custom-v1\")"
+            where: "((\"jql\" in properties[\"endpoint\"]) and (defined(properties[\"endpoint\"]))) or ((\"custom-query\" in properties[\"endpoint\"]) and (defined(properties[\"endpoint\"])))"
           })
           
-          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data_custom, creds.apiKey, creds.apiSecret)).done(function(results_custom_v1) {
-            var data_non_custom = _.extend({}, globalParams, {
-              event: "subquery",
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_jql) {
+            var data = _.extend({}, globalParams, {
+              event: "API request",
               type: "general",
-              where: "(properties[\"type\"]!=\"custom-v1\")"
-            })
-            $.get("https://mixpanel.com/api/2.0/segmentation", signData(data_non_custom, creds.apiKey, creds.apiSecret)).done(function(results_not_custom_v1) {
+              where: "(not \"jql\" in properties[\"endpoint\"]) and (not \"custom-query\" in properties[\"endpoint\"])"
+          })
+            $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_not_jql) {
               $('.chart.report-jql-queries .body').MPChart('setData', {
-                "jql": results_custom_v1.data.values.subquery,
-                "non-jql": results_not_custom_v1.data.values.subquery
+                "jql": results_jql.data.values["API request"],
+                "non-jql": results_non_jql.data.values["API request"]
               });
             })
           })
