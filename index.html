@@ -617,11 +617,11 @@
         </div>
         <div class="body"></div>
       </div>
-      <div class="chart report-predict">
+      <div class="chart report-ml">
         <div class="header">
-          <div class="title">The number of Predict and non Predict queries</div>
+          <div class="title">The number of ML and non ML queries</div>
           <div class="help-tip">
-      			<p class="tooltip">The number of queries predict queries as seen by the arb local query server vs. the ones not from predict.</p>
+      			<p class="tooltip">The number of ML queries as seen by the arb local query server vs. the ones not from ML (<a target="_blank" href="https://mixpanel.com/report/29988/segmentation/#action:segment,arb_event:subquery,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,property:%28name:query_origin,source:properties,type:string%29,selected_property_type:string,type:string%29%29,segment_type:string,to_date:0,type:general,unit:hour">source</a>)</p>
       		</div>
         </div>
         <div class="body"></div>
@@ -1031,7 +1031,7 @@
           })
         });
         
-        // predict vs non-predict
+        // ml vs non-ml
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 29988}).done(function(creds) {
           var data = _.extend({}, globalParams, {
             event: "subquery",
@@ -1039,16 +1039,16 @@
             where: "\"ml-\" in properties[\"query_origin\"]"
           })
           
-          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(predict) {
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(ml) {
             var data = _.extend({}, globalParams, {
               event: "subquery",
               type: "general",
               where: "(not \"ml-\" in properties[\"query_origin\"])"
             })
-            $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(not_predict) {
-              $('.chart.report-predict .body').MPChart('setData', {
-                "predict": predict.data.values["subquery"],
-                "non predict": not_predict.data.values["subquery"]
+            $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(not_ml) {
+              $('.chart.report-ml .body').MPChart('setData', {
+                "ml": ml.data.values["subquery"],
+                "non ml": not_ml.data.values["subquery"]
               });
             })
           })
