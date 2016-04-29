@@ -617,6 +617,15 @@
         </div>
         <div class="body"></div>
       </div>
+      <div class="chart report-predict">
+        <div class="header">
+          <div class="title">The number of Predict and non Predict queries</div>
+          <div class="help-tip">
+      			<p class="tooltip">The number of queries predict queries as seen by the arb local query server vs. the ones not from predict.</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
     </div>
     <script type="text/cq" id="activeUsersQuery">
       var nowUTC = (new Date()).getTime();
@@ -1007,16 +1016,39 @@
             where: "(\"jql\" in properties[\"endpoint\"]) and (defined(properties[\"endpoint\"])) or (\"custom-query\" in properties[\"endpoint\"]) and (defined(properties[\"endpoint\"]))"
           })
           
-          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_jql) {
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(jql) {
             var data = _.extend({}, globalParams, {
               event: "API request",
               type: "general",
               where: "(not \"jql\" in properties[\"endpoint\"]) and (not \"custom-query\" in properties[\"endpoint\"])"
             })
-            $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_not_jql) {
+            $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(not_jql) {
               $('.chart.report-jql-queries .body').MPChart('setData', {
-                "jql": results_jql.data.values["API request"],
-                "non jql": results_not_jql.data.values["API request"]
+                "jql": jql.data.values["API request"],
+                "non jql": not_jql.data.values["API request"]
+              });
+            })
+          })
+        });
+        
+        // predict vs non-predict
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 29988}).done(function(creds) {
+          var data = _.extend({}, globalParams, {
+            event: "subquery",
+            type: "general",
+            where: "\"ml-\" in properties[\"query_origin\"]"
+          })
+          
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(predict) {
+            var data = _.extend({}, globalParams, {
+              event: "subquery",
+              type: "general",
+              where: "(not \"ml-\" in properties[\"query_origin\"])"
+            })
+            $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(not_predict) {
+              $('.chart.report-predict .body').MPChart('setData', {
+                "predict": predict.data.values["subquery"],
+                "non predict": not_predict.data.values["subquery"]
               });
             })
           })
