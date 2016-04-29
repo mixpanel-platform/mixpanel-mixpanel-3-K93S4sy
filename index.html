@@ -1004,7 +1004,7 @@
           var data = _.extend({}, globalParams, {
             event: "API request",
             type: "general",
-            where: "((\"jql\" in properties[\"endpoint\"]) and (defined(properties[\"endpoint\"]))) or ((\"custom-query\" in properties[\"endpoint\"]) and (defined(properties[\"endpoint\"])))"
+            where: "(\"jql\" in properties[\"endpoint\"]) and (defined(properties[\"endpoint\"])) or (\"custom-query\" in properties[\"endpoint\"]) and (defined(properties[\"endpoint\"]))"
           })
           
           $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_jql) {
@@ -1012,7 +1012,7 @@
               event: "API request",
               type: "general",
               where: "(not \"jql\" in properties[\"endpoint\"]) and (not \"custom-query\" in properties[\"endpoint\"])"
-          })
+            })
             $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_not_jql) {
               $('.chart.report-jql-queries .body').MPChart('setData', {
                 "jql": results_jql.data.values["API request"],
