@@ -1060,10 +1060,19 @@
               where: "properties[\"elapsed\"]>120000"
             })
             $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(timeouts) {
-              $('.chart.report-read-api-dqs .body').MPChart('setData', {
-                'slow queries': slow.data.values["API request"],
-                'timeouts': timeouts.data.values["API request"]
-              });
+              var data = _.extend({}, globalParams, {
+                event: "API request",
+                type: "general",
+                where: "properties[\"error\"]"
+              })
+              $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(errors) {
+                $('.chart.report-read-api-dqs .body').MPChart('setData', {
+                  'slow queries': slow.data.values["API request"],
+                  'timeouts': timeouts.data.values["API request"],
+                  'errors': errors.data.values["API request"]
+                });
+              })
+              
             })
             
           })
