@@ -427,11 +427,21 @@
         <div class="body"></div>
       </div>
       
-      <div class="chart integrations">
+      <div class="chart new-integrations">
         <div class="header">
           <div class="title">New integrations</div>
           <div class="help-tip">
       			<p class="tooltip">The total count of new integrations using the "first integration date" property on user profiles where their "Current tally" is greater than 0.</p>
+      		</div>
+        </div>
+        <div class="body"></div>
+      </div>
+      
+      <div class="chart real-integrations">
+        <div class="header">
+          <div class="title">Real integrations</div>
+          <div class="help-tip">
+      			<p class="tooltip">The total count of new integrations using the "first integration date" property on user profiles where their "Current tally" is greater than 100.</p>
       		</div>
         </div>
         <div class="body"></div>
@@ -807,7 +817,7 @@
             $('.chart.plan-changes-value .body').MPChart('setData', results.values);
           });
           
-        // integrations
+        // new integrations
         MP.api.query('/api/2.0/engage/analytics', {
           x_segment: 'first integration date',
           x_type: 'datetime',
@@ -824,7 +834,27 @@
                 data[seg][date] = count;
               })
             })
-            $('.chart.integrations .body').MPChart('setData', data);
+            $('.chart.new-integrations .body').MPChart('setData', data);
+          });
+          
+        // real integrations
+        MP.api.query('/api/2.0/engage/analytics', {
+          x_segment: 'first integration date',
+          x_type: 'datetime',
+          from_date: startDate.format('YYYY-MM-DD'),
+          to_date: endDate.format('YYYY-MM-DD'),
+          x_unit: unit,
+          where: 'properties["Current tally"] > 100 and not "@mixpanel.com" in properties["$email"]'
+        })
+          .done(function(resp) { 
+            data = {};
+            _.each(resp.results, function(segmentsAndCounts, date) {
+              _.each(segmentsAndCounts, function(count, seg) {
+                data[seg] = data[seg] || {};
+                data[seg][date] = count;
+              })
+            })
+            $('.chart.real-integrations .body').MPChart('setData', data);
           });
       },
       
