@@ -1030,8 +1030,18 @@
             on: "number(properties[\"count\"])"
           })
           
-          $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
-            $('.chart.report-people-updates .body').MPChart('setData',  {"people updates": results.results});
+          $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_pre_sampling) {
+            var data = _.extend({}, globalParams, {
+              event: "people_updates",
+              on: "number(properties[\"post_sampling\"])"
+            })
+            $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_post_sampling){
+              $('.chart.report-people-updates .body').MPChart('setData',  {
+                "people updates pre sampling": results_pre_sampling.results,
+                "people updates post sampling": results_post_sampling.results
+              });
+            })
+            
           })
         });
         
