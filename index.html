@@ -1054,7 +1054,16 @@
           })
           
           $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
-            $('.chart.report-decide-queries .body').MPChart('setData',  {"decide queries": results.results});
+            var data = _.extend({}, globalParams, {
+              event: "request"
+            })
+            $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_api){
+              $('.chart.report-decide-queries .body').MPChart('setData',  {
+                "decide queries": results.results,
+                "api queries": results_api.results
+              });
+
+            })
           })
         });
         
