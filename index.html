@@ -1097,13 +1097,13 @@
               })
               $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_variants) {
                 for (var key in results_notifications.results) {
-                  result_notifications.results[key] = result_notifications.results[key]*1000
+                  results_notifications.results[key] = results_notifications.results[key]*1000
                 }
                 for (var key in results_surveys.results) {
-                  result_surveys.results[key] = result_surveys.results[key]*1000
+                  results_surveys.results[key] = results_surveys.results[key]*1000
                 }
                 for (var key in results_variants.results) {
-                  result_variants.results[key] = result_variants.results[key]*1000
+                  results_variants.results[key] = results_variants.results[key]*1000
                 }
                 $('.chart.report-decide-queries-type .body').MPChart('setData',  {
                   "notifications": results_notifications.results,
