@@ -1079,6 +1079,33 @@
           })
         });
         
+        // decide notifications, surveys and variants
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 486853}).done(function(creds) {
+          var data = _.extend({}, globalParams, {
+            event: "request",
+            on: "number(properties[\"num_notifications\"])"
+          })
+          $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_notifications) {
+            var data = _.extend({}, globalParams, {
+              event: "request",
+              on: "number(properties[\"num_surveys\"])"
+            })
+            $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_surveys) {
+              var data = _.extend({}, globalParams, {
+                event: "request",
+                on: "number(properties[\"num_variants\"])"
+              })
+              $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_variants) {
+                $('.chart.report-decide-queries-type .body').MPChart('setData',  {
+                  "notifications": results_notifications.results,
+                  "surveys": results_surveys.results,
+                  "variants": results_variants.results
+                });
+              });
+            });
+          });
+        });
+
         // jql vs non-jql queries
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 620033}).done(function(creds) {
           var data = _.extend({}, globalParams, {
