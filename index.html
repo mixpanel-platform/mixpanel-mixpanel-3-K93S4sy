@@ -1067,7 +1067,7 @@
               event: "total_requests"
             })
             $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_api){
-              for (var key in results_api.data.values.request) {
+              for (var key in results_api.data.values.total_requests) {
                 results_api.data.values.total_requests[key] = results_api.data.values.total_requests[key]*10000
               }
               $('.chart.report-decide-queries .body').MPChart('setData',  {
