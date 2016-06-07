@@ -1386,7 +1386,7 @@
             script: $.trim($("#nightTimeEscalationsQuery").html()),
           }
           //creds.apiKey, creds.apiSecret
-          $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData(data, "26fee357395a38b14e707dda933f88c9", "44505545fb7e67a00df4f120767a68d4")).done(function(results) {
+          $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData(data, "03751d0a0974a16e53779cad4ad43a50", "118d82c206a3bdf64443fca0a789bcc5")).done(function(results) {
             chart_data = {};
             for (var i in results) {
                 chart_data[results[i].key[0]] = results[i].value;
@@ -1436,6 +1436,9 @@
         if ($tab.data('section') == "systems") {
           $('.unit-select').val('day')
           $('.intervals-input').val('14')
+        } else if ($tab.data('section') == "sre") {
+          $('.unit-select').val('week')
+          $('.intervals-input').val('16')
         }
         runQuery();
       });
