@@ -852,6 +852,7 @@
 
         function main() {
           return Events({event_selectors: [{event: 'Buildbot finished'}], from_date: params.from_date, to_date: params.to_date})
+          .filter(function(e) {return e.properties.branch == "master"})
           .groupBy([allignTimestamp], resultReducer)
           ;
         }
