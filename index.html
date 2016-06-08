@@ -1389,7 +1389,15 @@
           $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData(data, "03751d0a0974a16e53779cad4ad43a50", "118d82c206a3bdf64443fca0a789bcc5")).done(function(results) {
             chart_data = {};
             for (var i in results) {
-                chart_data[results[i].key[0]] = results[i].value;
+                var key = results[i].key[0];
+                if (key.startsWith("Ops lead (")) {
+                    if (key.endsWith(" first)")) {
+                        key = key.substr(10, key.length - 17)
+                    } else {
+                        key = key.substr(10, key.length - 10)
+                    }
+                }
+                chart_data[key] = results[i].value;
             }
             $('.chart.nigh-time-pages .body').MPChart('setData', chart_data);
             //$('#nightTimeEscalationsElement').jsonView(chart_data);
