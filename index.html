@@ -658,15 +658,24 @@
         <div class="header">
           <div class="title">Nights with night time pages</div>
             <div class="help-tip">
-                <p class="tooltip">TODO</p>
+                <p class="tooltip">Days with pager duty alerts occured at night time (10pm - 9am)</p>
             </div>
         </div>
         <div class="body"></div>
-        
       </div>
-          <div class="result" id="nightTimeEscalationsElement">
-         </div>
-     </div>
+        <!--<div class="result" id="nightTimeEscalationsElement">
+         </div>-->
+        
+      <div class="chart build-bot">
+        <div class="header">
+          <div class="title">Buildbod failre rate %</div>
+            <div class="help-tip">
+                <p class="tooltip">failure / (success + failure) * 100%</p>
+            </div>
+        </div>
+        <div class="body"></div>
+      </div>
+    </div>
      
     <script type="text/jql" id="nightTimeEscalationsQuery">
         function timestampToDate(timestamp) {
@@ -681,8 +690,6 @@
         function isNight(date) {
           return date.getHours() < nightEnd  || date.getHours() >= nightStart;
         }
-
-
 
         function allignTimestampToMonth(timestamp) {
           function padMonth(month) {
@@ -779,6 +786,73 @@
             return result;
           })
           .map(computeEscalations)
+          ;
+        }
+    </script>
+    
+    <script type="text/jql" id="buildBotFailureRateQuery">
+        function timestampToDate(timestamp) {
+          var result = new Date(0);
+          result.setUTCSeconds(timestamp);
+          return result;
+        }
+
+        function allignTimestampToMonth(timestamp) {
+          function padMonth(month) {
+            if (month < 10) {
+              return "0" + month;
+            } else {
+              return "" + month;
+            }
+          }
+          var date = timestampToDate(timestamp);
+          return new Date(date.getUTCFullYear() + "-" + padMonth(date.getUTCMonth() + 1) + "-01T00:00:00Z");
+        }
+
+        function allignTimestampToDay(timestamp) {
+          var timeGranularity = 1 * 60 * 60 * 24; //1d
+          return timestampToDate(Math.floor((timestamp) / timeGranularity) * timeGranularity);
+        }
+
+        function allignTimestampToWeek(timestamp) {
+          var timeShift = 4 * 60 * 60 * 24; // epoch is Thursday
+          var timeGranularity = 7 * 60 * 60 * 24; //1d
+          return timestampToDate(Math.floor((timestamp + timeShift) / timeGranularity) * timeGranularity + timeShift - 7 * 60 * 60 * 24);
+        }
+
+        function allignTimestamp(e) {
+          var timestamp = e.time / 1000;
+          if (params.unit == 'day') {
+            return allignTimestampToDay(timestamp);
+          } else if (params.unit == 'week') {
+            return allignTimestampToWeek(timestamp);
+          } else if (params.unit == 'month') {
+            return allignTimestampToMonth(timestamp);
+          } else {
+            return new Date();
+          }
+        }
+
+        function resultReducer(a, b) {
+         result = {success: 0, failure: 0};
+         for (var i in a) {
+            result.success += a[i].success;
+            result.failure += a[i].failure;
+          }
+          
+          for (var i in b) {
+            if (b[i].properties.num_failed_tests > 0) {
+              result.failure += 1;
+            } else {
+              result.success += 1;
+            }
+          }
+          return result;
+        }
+
+        function main() {
+          return Events({event_selectors: [{event: 'Buildbot finished'}], from_date: params.from_date, to_date: params.to_date})
+          .groupBy([allignTimestamp], resultReducer)
           ;
         }
     </script>
@@ -1364,7 +1438,8 @@
           })
           
           $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
-            $('.chart.report-read-api-slow-projects .body').MPChart('setData', results.data.values);
+            var chart = $('.chart.report-read-api-slow-projects .body');
+            chart.MPChart('setData', results.data.values);
           })
         });
       }, // End systems
@@ -1379,15 +1454,16 @@
           to_date: endDate.format('YYYY-MM-DD')
         }
         // Night time escalations
-        // TODO: 962435 after change to allowed_projects populated
-        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 620033}).done(function(creds) {
-          var data = {
+        // TODO: 945801 after change to allowed_projects populated
+        
+        //getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 620033}).done(function(creds) {
+        
+          //creds.apiKey, creds.apiSecret
+          $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData({
             params: JSON.stringify(globalParams),
             script: $.trim($("#nightTimeEscalationsQuery").html()),
-          }
-          //creds.apiKey, creds.apiSecret
-          $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData(data, "03751d0a0974a16e53779cad4ad43a50", "118d82c206a3bdf64443fca0a789bcc5")).done(function(results) {
-            chart_data = {};
+          }, "03751d0a0974a16e53779cad4ad43a50", "118d82c206a3bdf64443fca0a789bcc5")).done(function(results) {
+            var chart_data = {};
             for (var i in results) {
                 var key = results[i].key[0];
                 if (key.startsWith("Ops lead (")) {
@@ -1402,8 +1478,27 @@
             $('.chart.nigh-time-pages .body').MPChart('setData', chart_data);
             //$('#nightTimeEscalationsElement').jsonView(chart_data);
           })
-        });
+        //});
+        
         // End Night time escalations
+        
+        //Buildbot
+        
+        // TODO: 945801 after change to allowed_projects populated
+        //getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 620033}).done(function(creds) {
+          //creds.apiKey, creds.apiSecret
+          $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData({
+            params: JSON.stringify(globalParams),
+            script: $.trim($("#buildBotFailureRateQuery").html()),
+          }, "03751d0a0974a16e53779cad4ad43a50", "118d82c206a3bdf64443fca0a789bcc5")).done(function(results) {
+            var chart_data = {master: {}};
+            for (var i in results) {
+                chart_data['master'][results[i].key[0]] = Math.floor(results[i].value.failure / (results[i].value.success + results[i].value.failure) * 10000) / 100;
+            }
+            $('.chart.build-bot .body').MPChart('setData', chart_data);
+          })
+        //});
+        // End Buildbot
         
       } // End sre
     }
