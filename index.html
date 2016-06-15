@@ -668,9 +668,9 @@
         
       <div class="chart build-bot">
         <div class="header">
-          <div class="title">Build failre rate %</div>
+          <div class="title">Buildbot failed stages</div>
             <div class="help-tip">
-                <p class="tooltip">failure / (success + failure) * 100%</p>
+                <p class="tooltip">Stages that are failing during master checks</p>
             </div>
         </div>
         <div class="body"></div>
@@ -841,7 +841,7 @@
           }
           
           for (var i in b) {
-            if (b[i].properties.num_failed_tests > 0) {
+            if (b[i].properties.step_status != "success") {
               result.failure += 1;
             } else {
               result.success += 1;
@@ -850,10 +850,44 @@
           return result;
         }
 
+        function reduceOnFirstField(a, b) {
+          result = {};
+          
+          for (var i in a) {
+            for (var k in a[i]) {
+              if (!result.hasOwnProperty(k)) {
+                result[k] = {};
+              }
+              for (var l in a[i][k]) {
+                if (!result[k].hasOwnProperty(l)) {
+                  result[k][l] = a[i][k][l];
+                } else {
+                  result[k][l] += a[i][k][l];
+                }
+              }
+            }
+          }
+          for (var i in b) {
+            key = b[i].key[1];
+            if (!result.hasOwnProperty(key)) {
+              result[key] = {};
+            }
+            for (var l in b[i].value) {
+              if (!result[key].hasOwnProperty(l)) {
+                result[key][l] = b[i].value[l];
+              } else {
+                result[key][l] += b[i].value[l];
+              }
+            }
+          }
+          return result;
+        }
+
         function main() {
-          return Events({event_selectors: [{event: 'Buildbot finished'}], from_date: params.from_date, to_date: params.to_date})
+          return Events({event_selectors: [{event: 'Buildbot step finished'}], from_date: params.from_date, to_date: params.to_date})
           .filter(function(e) {return e.properties.branch == "master"})
-          .groupBy([allignTimestamp], resultReducer)
+          .groupBy(["properties.step_name", allignTimestamp], resultReducer)
+          .groupBy([function(e) {return e.key[0]}], reduceOnFirstField)
           ;
         }
     </script>
@@ -1494,7 +1528,10 @@
           }, "03751d0a0974a16e53779cad4ad43a50", "118d82c206a3bdf64443fca0a789bcc5")).done(function(results) {
             var chart_data = {master: {}};
             for (var i in results) {
-                chart_data['master'][results[i].key[0]] = Math.floor(results[i].value.failure / (results[i].value.success + results[i].value.failure) * 10000) / 100;
+                chart_data[results[i].key[0]] = {}
+                for (var k in results[i].value) {
+                    chart_data[results[i].key[0]][k] = results[i].value[k].failure
+                }
             }
             $('.chart.build-bot .body').MPChart('setData', chart_data);
           })
