@@ -667,7 +667,7 @@
         <div class="header">
           <div class="title">Missed pages</div>
             <div class="help-tip">
-                <p class="tooltip">Number of PagerDuty notifications that went unacked. (<a target="_blank" href="https://mixpanel.com/report/945801/segmentation/#action:segment,arb_event:pagerduty.incident.escalate,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-365,ms_checked:(pagerduty.incident.escalate:!t),ms_values:!(pagerduty.incident.escalate),to_date:0,type:unique,unit:month">source</a>)</p>
+                <p class="tooltip">Number of PagerDuty notifications that went unacked. (<a target="_blank" href="https://mixpanel.com/report/945801/segmentation/#action:segment,arb_event:pagerduty.incident.escalate,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-365,ms_checked:(%27Ops%20lead%20(ML%20first)%27:!t,%27Ops%20lead%20(People%20first)%27:!t,%27Ops%20lead%20(Product%20first)%27:!t,%27Ops%20lead%20(SRE%20first)%27:!t,%27Ops%20lead%20(Systems%20first)%27:!t,%27Page%20Daytime%27:!t,Support:!t),ms_values:!(%27Ops%20lead%20(Systems%20first)%27,%27Ops%20lead%20(Product%20first)%27,Support,%27Ops%20lead%20(SRE%20first)%27,%27Ops%20lead%20(People%20first)%27,%27Ops%20lead%20(ML%20first)%27,%27Page%20Daytime%27),segfilter:!((dropdown_tab_index:0,filter:(operand:%27%7B%22type%22:%22timeout%22%7D%27,operator:in),property:(name:channel,source:properties,type:object),selected_property_type:object,type:string),(dropdown_tab_index:0,property:(name:escalation_policy_name,source:user,type:string),selected_property_type:string,type:string)),segment_type:string,to_date:0,type:general,unit:week">source</a>)</p>
             </div>
         </div>
         <div class="body"></div>
