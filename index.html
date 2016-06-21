@@ -836,8 +836,8 @@
         function main() {
             return join(Events({from_date: params.from_date, to_date: params.to_date, event_selectors: [{event: 'pagerduty.incident.escalate'}]}), People())
             .filter(function (t) {return t.event !== undefined && t.user !== undefined})
-            .groupBy([escalationPolicyName, isExplicitEscalation, function (t) {return allignTimestampToDay(t.event.time / 1000)}, "event.distinct_id"], mixpanel.reducer.count())
-            .groupBy([function (t) {return [t.key[0] + " " + t.key[1], t.key[2]]}], mixpanel.reducer.count())
+            .groupBy([escalationPolicyName/*, isExplicitEscalation*/, function (t) {return allignTimestampToDay(t.event.time / 1000)}/*, "event.distinct_id"*/], mixpanel.reducer.count())
+            //.groupBy([function (t) {return [t.key[0] + " " + t.key[1], t.key[2]]}], mixpanel.reducer.count())
             .groupBy([function (t) {return t.key[0]}], dateReducer)
             .map(fillDateGaps)
             ;
