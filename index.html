@@ -86,90 +86,90 @@
       }
       
       /*-------------------------
-      	Inline help tip
+        Inline help tip
       --------------------------*/
       
       
       .help-tip {
-      	display: inline-block;
-      	position: relative;
-      	text-align: center;
-      	background-color: #627695;
-      	border-radius: 50%;
-      	margin-left: 4px;
-      	width: 16px;
-      	height: 16px;
-      	font-size: 10px;
-      	line-height: 16px;
-      	cursor: default;
+        display: inline-block;
+        position: relative;
+        text-align: center;
+        background-color: #627695;
+        border-radius: 50%;
+        margin-left: 4px;
+        width: 16px;
+        height: 16px;
+        font-size: 10px;
+        line-height: 16px;
+        cursor: default;
       }
       
       .help-tip:before {
-      	content:'?';
-      	font-weight: bold;
-      	color:#fff;
+        content:'?';
+        font-weight: bold;
+        color:#fff;
       }
       
       .help-tip:hover p {
-      	display:block;
-      	transform-origin: 100% 0%;
+        display:block;
+        transform-origin: 100% 0%;
       
-      	-webkit-animation: fadeIn 0.3s ease-in-out;
-      	animation: fadeIn 0.3s ease-in-out;
+        -webkit-animation: fadeIn 0.3s ease-in-out;
+        animation: fadeIn 0.3s ease-in-out;
       
       }
       
       .help-tip p {
-      	display: none;
-      	text-align: left;
-      	background-color: #1E2021;
-      	padding: 20px;
-      	width: 300px;
-      	position: absolute;
-      	border-radius: 3px;
-      	box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
-      	left: 0px;
-      	color: #FFF;
-      	font-size: 13px;
-      	line-height: 1.4;
-      	z-index: 200000;
+        display: none;
+        text-align: left;
+        background-color: #1E2021;
+        padding: 20px;
+        width: 300px;
+        position: absolute;
+        border-radius: 3px;
+        box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+        left: 0px;
+        color: #FFF;
+        font-size: 13px;
+        line-height: 1.4;
+        z-index: 200000;
       }
       
       .help-tip p:before {
-      	position: absolute;
-      	content: '';
-      	width:0;
-      	height: 0;
-      	border:6px solid transparent;
-      	border-bottom-color:#1E2021;
-      	left:10px;
-      	top:-12px;
+        position: absolute;
+        content: '';
+        width:0;
+        height: 0;
+        border:6px solid transparent;
+        border-bottom-color:#1E2021;
+        left:10px;
+        top:-12px;
       }
       
       .help-tip p:after {
-      	width:100%;
-      	height:40px;
-      	content:'';
-      	position: absolute;
-      	top:-40px;
-      	left:0;
+        width:100%;
+        height:40px;
+        content:'';
+        position: absolute;
+        top:-40px;
+        left:0;
       }
       
       @-webkit-keyframes fadeIn {
-      	0% { 
-      		opacity:0; 
-      		transform: scale(0.6);
-      	}
+        0% { 
+          opacity:0; 
+          transform: scale(0.6);
+        }
       
-      	100% {
-      		opacity:100%;
-      		transform: scale(1);
-      	}
+        100% {
+          opacity:100%;
+          transform: scale(1);
+        }
       }
       
       @keyframes fadeIn {
-      	0% { opacity:0; }
-      	100% { opacity:100%; }
+        0% { opacity:0; }
+        100% { opacity:100%; }
       }
       
       
@@ -410,6 +410,7 @@
           <li role="presentation" data-section="people"><a href="#">People/notifications</a></li>
           <li role="presentation" data-section="systems"><a href="#">Systems</a></li>
           <li role="presentation" data-section="sre"><a href="#">SRE</a></li>
+          <li role="presentation" data-section="mobile"><a href="#">Mobile</a></li>
         </ul>
     </div>
      
@@ -418,8 +419,8 @@
         <div class="header">
           <div class="title">Unique homepage visits</div>
           <div class="help-tip">
-      			<p class="tooltip">The number of unique people viewing the home page. Uses the "homepage new" event in the main mixpanel project.</p>
-      		</div>
+            <p class="tooltip">The number of unique people viewing the home page. Uses the "homepage new" event in the main mixpanel project.</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -428,8 +429,8 @@
         <div class="header">
           <div class="title">New signups</div>
           <div class="help-tip">
-      			<p class="tooltip">The number of "$signup" events excluding users with "@mixpanel.com" email addresses</p>
-      		</div>
+            <p class="tooltip">The number of "$signup" events excluding users with "@mixpanel.com" email addresses</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -438,8 +439,8 @@
         <div class="header">
           <div class="title">New integrations</div>
           <div class="help-tip">
-      			<p class="tooltip">The total count of new integrations using the "first integration date" property on user profiles where their "Current tally" is greater than 0.</p>
-      		</div>
+            <p class="tooltip">The total count of new integrations using the "first integration date" property on user profiles where their "Current tally" is greater than 0.</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -448,8 +449,8 @@
         <div class="header">
           <div class="title">Real integrations</div>
           <div class="help-tip">
-      			<p class="tooltip">The total count of new integrations using the "first integration date" property on user profiles where their "Current tally" is greater than 100.</p>
-      		</div>
+            <p class="tooltip">The total count of new integrations using the "first integration date" property on user profiles where their "Current tally" is greater than 100.</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -458,8 +459,8 @@
         <div class="header">
           <div class="title">Active users</div>
           <div class="help-tip">
-      			<p class="tooltip">Unique users who have viewed at least one report and currently have more than 500 tallies</p>
-      		</div>
+            <p class="tooltip">Unique users who have viewed at least one report and currently have more than 500 tallies</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -467,14 +468,14 @@
         <div class="header">
           <div class="title">Number of plan changes (monthly only)</div>
           <div class="help-tip">
-      			<p class="tooltip">
-      			  New paids: A "new paid user" is when a user makes their first non-free plan choice.<br /> <br />
-      			  Upgrades: An upgrade happens when a user who is on a paid plan chooses a new plan that costs more.<br /><br />
-      			  Downgrades: A downgrade happens when a user choices a new plan that is cheaper (but not free).<br /><br />
-      			  Churns: Churn is any time a user downgrades from a paid plan to a free plan. <br /><br />
-      			  The data comes directly from the "billing_planchoice" table in MySQL.
-    			  </p>
-      		</div>
+            <p class="tooltip">
+              New paids: A "new paid user" is when a user makes their first non-free plan choice.<br /> <br />
+              Upgrades: An upgrade happens when a user who is on a paid plan chooses a new plan that costs more.<br /><br />
+              Downgrades: A downgrade happens when a user choices a new plan that is cheaper (but not free).<br /><br />
+              Churns: Churn is any time a user downgrades from a paid plan to a free plan. <br /><br />
+              The data comes directly from the "billing_planchoice" table in MySQL.
+            </p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -482,14 +483,14 @@
         <div class="header">
           <div class="title">$ amount of plan changes (monthly only)</div>
           <div class="help-tip">
-      			<p class="tooltip">
-      			  New paids: A "new paid user" is when a user makes their first non-free plan choice.<br /> <br />
-      			  Upgrades: An upgrade happens when a user who is on a paid plan chooses a new plan that costs more.<br /><br />
-      			  Downgrades: A downgrade happens when a user choices a new plan that is cheaper (but not free).<br /><br />
-      			  Churns: Churn is any time a user downgrades from a paid plan to a free plan. <br /><br />
-      			  The data comes directly from the "billing_planchoice" table in MySQL.
-    			  </p>
-      		</div>
+            <p class="tooltip">
+              New paids: A "new paid user" is when a user makes their first non-free plan choice.<br /> <br />
+              Upgrades: An upgrade happens when a user who is on a paid plan chooses a new plan that costs more.<br /><br />
+              Downgrades: A downgrade happens when a user choices a new plan that is cheaper (but not free).<br /><br />
+              Churns: Churn is any time a user downgrades from a paid plan to a free plan. <br /><br />
+              The data comes directly from the "billing_planchoice" table in MySQL.
+            </p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -499,8 +500,8 @@
         <div class="header">
           <div class="title">Total report views by report type</div>
           <div class="help-tip">
-      			<p class="tooltip">The number of times people are viewing each report type. This is based on the "Viewed report" event segmented by "tab"</p>
-      		</div>
+            <p class="tooltip">The number of times people are viewing each report type. This is based on the "Viewed report" event segmented by "tab"</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -508,8 +509,8 @@
         <div class="header">
           <div class="title">Unique report views by report type</div>
           <div class="help-tip">
-      			<p class="tooltip">The number of people that are viewing each report type. This is based on the "Viewed report" event segmented by "tab"</p>
-      		</div>
+            <p class="tooltip">The number of people that are viewing each report type. This is based on the "Viewed report" event segmented by "tab"</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -517,8 +518,8 @@
         <div class="header">
           <div class="title">Queries per endpoint per project (90th percentile)</div>
           <div class="help-tip">
-      			<p class="tooltip">For project that reprents the ninetieth precenile on each endpoint, how many queries do they make? This uses the "Mixpanel Read API" project and the "API request" event.</p>
-      		</div>
+            <p class="tooltip">For project that reprents the ninetieth precenile on each endpoint, how many queries do they make? This uses the "Mixpanel Read API" project and the "API request" event.</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -528,8 +529,8 @@
         <div class="header">
           <div class="title">Notifications sent by type</div>
           <div class="help-tip">
-      			<p class="tooltip">Uses the "Mixpanel notifications" project's "notification" event</p>
-      		</div>
+            <p class="tooltip">Uses the "Mixpanel notifications" project's "notification" event</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -537,8 +538,8 @@
         <div class="header">
           <div class="title">Campaign states by status</div>
           <div class="help-tip">
-      			<p class="tooltip">We run a daily cron that sends an event for each campaign that represents the current state.</p>
-      		</div>
+            <p class="tooltip">We run a daily cron that sends an event for each campaign that represents the current state.</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -546,8 +547,8 @@
         <div class="header">
           <div class="title">Total report views by report type</div>
           <div class="help-tip">
-      			<p class="tooltip">The number of times people are viewing each report type. This is based on the "Viewed report" event segmented by "tab"</p>
-      		</div>
+            <p class="tooltip">The number of times people are viewing each report type. This is based on the "Viewed report" event segmented by "tab"</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -555,8 +556,8 @@
         <div class="header">
           <div class="title">Unique report views by report type</div>
           <div class="help-tip">
-      			<p class="tooltip">The number of people that are viewing each report type. This is based on the "Viewed report" event segmented by "tab"</p>
-      		</div>
+            <p class="tooltip">The number of people that are viewing each report type. This is based on the "Viewed report" event segmented by "tab"</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -566,8 +567,8 @@
         <div class="header">
           <div class="title">Number of Track Events</div>
           <div class="help-tip">
-      			<p class="tooltip">The number of track events as seen by the remap consumers. These numbers are before sampling. Higher is better. (<a target="_blank" href="https://mixpanel.com/report/29988/segmentation/#action:sum,arb_event:track_events,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,property:%28name:count,source:properties,type:number%29,selected_property_type:number,type:number%29%29,segment_type:number,subsegment_property:%28name:project_id,source:properties,type:number%29,subsegment_type:string,to_date:0,type:general,unit:hour">source</a>)</p>
-      		</div>
+            <p class="tooltip">The number of track events as seen by the remap consumers. These numbers are before sampling. Higher is better. (<a target="_blank" href="https://mixpanel.com/report/29988/segmentation/#action:sum,arb_event:track_events,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,property:%28name:count,source:properties,type:number%29,selected_property_type:number,type:number%29%29,segment_type:number,subsegment_property:%28name:project_id,source:properties,type:number%29,subsegment_type:string,to_date:0,type:general,unit:hour">source</a>)</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -575,8 +576,8 @@
         <div class="header">
           <div class="title">Number of People Updates</div>
           <div class="help-tip">
-      			<p class="tooltip">The number of people updates as seen by the remap consumers. These numbers are before sampling. Higher is better. (<a target="_blank" href="https://mixpanel.com/report/399213/segmentation/#action:sum,arb_event:people_updates,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,ms_checked:%28%29,segfilter:!%28%28dropdown_tab_index:0,property:%28name:count,source:properties,type:number%29,selected_property_type:number,type:number%29%29,segment_type:number,subsegment_property:%28name:project_id,source:properties,type:number%29,subsegment_type:string,to_date:0,type:general,unit:hour">source</a>)</p>
-      		</div>
+            <p class="tooltip">The number of people updates as seen by the remap consumers. These numbers are before sampling. Higher is better. (<a target="_blank" href="https://mixpanel.com/report/399213/segmentation/#action:sum,arb_event:people_updates,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,ms_checked:%28%29,segfilter:!%28%28dropdown_tab_index:0,property:%28name:count,source:properties,type:number%29,selected_property_type:number,type:number%29%29,segment_type:number,subsegment_property:%28name:project_id,source:properties,type:number%29,subsegment_type:string,to_date:0,type:general,unit:hour">source</a>)</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -584,8 +585,8 @@
         <div class="header">
           <div class="title">Number of Decide Queries</div>
           <div class="help-tip">
-      			<p class="tooltip">The number of decide queries as seen by the decide distributed query servers and the decide API. The DQS numbers are post any filtering done by the decide api servers. The API numbers are multiplied by 10000 because decide only tracks 0.01% of the requests. Higher is better. (<a target="_blank" href="https://mixpanel.com/report/486853/segmentation/#action:sum,arb_event:decide_requests,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,property:%28name:count,source:properties,type:number%29,selected_property_type:number,type:number%29%29,segment_type:number,subsegment_property:%28name:project_id,source:properties,type:number%29,subsegment_type:string,to_date:0,type:general,unit:hour">dqs queries</a>, <a target="_blank" href="https://mixpanel.com/report/486853/segmentation/#action:segment,arb_event:request,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,property:%28name:project_id,source:properties,type:number%29,selected_property_type:number,type:string%29%29,segment_type:string,to_date:0,type:general,unit:hour">api queries</a>).</p>
-      		</div>
+            <p class="tooltip">The number of decide queries as seen by the decide distributed query servers and the decide API. The DQS numbers are post any filtering done by the decide api servers. The API numbers are multiplied by 10000 because decide only tracks 0.01% of the requests. Higher is better. (<a target="_blank" href="https://mixpanel.com/report/486853/segmentation/#action:sum,arb_event:decide_requests,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,property:%28name:count,source:properties,type:number%29,selected_property_type:number,type:number%29%29,segment_type:number,subsegment_property:%28name:project_id,source:properties,type:number%29,subsegment_type:string,to_date:0,type:general,unit:hour">dqs queries</a>, <a target="_blank" href="https://mixpanel.com/report/486853/segmentation/#action:segment,arb_event:request,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,property:%28name:project_id,source:properties,type:number%29,selected_property_type:number,type:string%29%29,segment_type:string,to_date:0,type:general,unit:hour">api queries</a>).</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -593,8 +594,8 @@
         <div class="header">
           <div class="title">Number of Notifications, Surveys and Variants sent by Decide API</div>
           <div class="help-tip">
-      			<p class="tooltip">The number of notifications, variants and surveys sent by the Decide API servers. Numbers are multiplied by 1000 because the server samples at 0.1%. Higher is better. (<a target="_blank" href="https://mixpanel.com/report/486853/segmentation/#action:sum,arb_event:request,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,property:%28name:num_notifications,source:properties,type:number%29,selected_property_type:number,type:number%29%29,segment_type:number,subsegment_property:%28name:project_id,source:properties,type:number%29,subsegment_type:string,to_date:0,type:general,unit:hour">notifications</a>, <a target="_blank" href="https://mixpanel.com/report/486853/segmentation/#action:sum,arb_event:request,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,property:%28name:num_surveys,source:properties,type:number%29,selected_property_type:number,type:number%29%29,segment_type:number,subsegment_property:%28name:project_id,source:properties,type:number%29,subsegment_type:string,to_date:0,type:general,unit:hour">surveys</a>, <a target="_blank" href="https://mixpanel.com/report/486853/segmentation/#action:sum,arb_event:request,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,property:%28name:num_variants,source:properties,type:number%29,selected_property_type:number,type:number%29%29,segment_type:number,subsegment_property:%28name:project_id,source:properties,type:number%29,subsegment_type:string,to_date:0,type:general,unit:hour">variants</a>).</p>
-      		</div>
+            <p class="tooltip">The number of notifications, variants and surveys sent by the Decide API servers. Numbers are multiplied by 1000 because the server samples at 0.1%. Higher is better. (<a target="_blank" href="https://mixpanel.com/report/486853/segmentation/#action:sum,arb_event:request,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,property:%28name:num_notifications,source:properties,type:number%29,selected_property_type:number,type:number%29%29,segment_type:number,subsegment_property:%28name:project_id,source:properties,type:number%29,subsegment_type:string,to_date:0,type:general,unit:hour">notifications</a>, <a target="_blank" href="https://mixpanel.com/report/486853/segmentation/#action:sum,arb_event:request,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,property:%28name:num_surveys,source:properties,type:number%29,selected_property_type:number,type:number%29%29,segment_type:number,subsegment_property:%28name:project_id,source:properties,type:number%29,subsegment_type:string,to_date:0,type:general,unit:hour">surveys</a>, <a target="_blank" href="https://mixpanel.com/report/486853/segmentation/#action:sum,arb_event:request,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,property:%28name:num_variants,source:properties,type:number%29,selected_property_type:number,type:number%29%29,segment_type:number,subsegment_property:%28name:project_id,source:properties,type:number%29,subsegment_type:string,to_date:0,type:general,unit:hour">variants</a>).</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -602,8 +603,8 @@
         <div class="header">
           <div class="title">Number of Errors, Timeouts and Slow Queries</div>
           <div class="help-tip">
-      			<p class="tooltip">Number of errors (except bad request, blocked or rate limited), timeouts (latency more than 120 seconds) and slow queries (latency more than 5 seconds) as seen by the read api. Lower is better. (<a  target="_blank" href="https://mixpanel.com/report/620033/segmentation/#action:segment,arb_event:%27API%20request%27,bool_op:or,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,filter:%28operand:%27120000%27,operator:%3E%29,property:%28name:elapsed,source:properties,type:number%29,selected_property_type:number,type:number%29,%28dropdown_tab_index:0,property:%28name:%27project%20id%27,source:properties,type:number%29,selected_property_type:number,type:string%29%29,segment_type:string,to_date:-1,type:general,unit:hour">timeouts</a>, <a target="_blank" href="https://mixpanel.com/report/620033/segmentation/#action:segment,arb_event:%27API%20request%27,bool_op:or,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,filter:%28operand:%275000%27,operator:%3E%29,property:%28name:elapsed,source:properties,type:number%29,selected_property_type:number,type:number%29,%28dropdown_tab_index:0,property:%28name:%27project%20id%27,source:properties,type:number%29,selected_property_type:number,type:string%29%29,segment_type:string,to_date:-1,type:general,unit:hour">slow queries</a>, <a target="_blank" href="https://mixpanel.com/report/620033/segmentation/#action:segment,arb_event:%27API%20request%27,bool_op:or,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,filter:%28operand:!%28unknown%29,operator:%3D%3D%29,property:%28name:error,source:properties,type:string%29,selected_property_type:string,type:string%29,%28dropdown_tab_index:0,property:%28name:%27project%20id%27,source:properties,type:number%29,selected_property_type:number,type:string%29%29,segment_type:string,to_date:-1,type:general,unit:hour">errors</a>)</p>
-      		</div>
+            <p class="tooltip">Number of errors (except bad request, blocked or rate limited), timeouts (latency more than 120 seconds) and slow queries (latency more than 5 seconds) as seen by the read api. Lower is better. (<a  target="_blank" href="https://mixpanel.com/report/620033/segmentation/#action:segment,arb_event:%27API%20request%27,bool_op:or,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,filter:%28operand:%27120000%27,operator:%3E%29,property:%28name:elapsed,source:properties,type:number%29,selected_property_type:number,type:number%29,%28dropdown_tab_index:0,property:%28name:%27project%20id%27,source:properties,type:number%29,selected_property_type:number,type:string%29%29,segment_type:string,to_date:-1,type:general,unit:hour">timeouts</a>, <a target="_blank" href="https://mixpanel.com/report/620033/segmentation/#action:segment,arb_event:%27API%20request%27,bool_op:or,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,filter:%28operand:%275000%27,operator:%3E%29,property:%28name:elapsed,source:properties,type:number%29,selected_property_type:number,type:number%29,%28dropdown_tab_index:0,property:%28name:%27project%20id%27,source:properties,type:number%29,selected_property_type:number,type:string%29%29,segment_type:string,to_date:-1,type:general,unit:hour">slow queries</a>, <a target="_blank" href="https://mixpanel.com/report/620033/segmentation/#action:segment,arb_event:%27API%20request%27,bool_op:or,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,filter:%28operand:!%28unknown%29,operator:%3D%3D%29,property:%28name:error,source:properties,type:string%29,selected_property_type:string,type:string%29,%28dropdown_tab_index:0,property:%28name:%27project%20id%27,source:properties,type:number%29,selected_property_type:number,type:string%29%29,segment_type:string,to_date:-1,type:general,unit:hour">errors</a>)</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -611,8 +612,8 @@
         <div class="header">
           <div class="title">Number of Slow Queries by Project</div>
           <div class="help-tip">
-      			<p class="tooltip">The top projects by the number of slow queries (latency more than 5 seconds) as seen by the read api. Lower is better. (<a target="_blank" href="https://mixpanel.com/report/620033/segmentation/#action:segment,arb_event:%27API%20request%27,bool_op:or,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,filter:%28operand:%275000%27,operator:%3E%29,property:%28name:elapsed,source:properties,type:number%29,selected_property_type:number,type:number%29,%28dropdown_tab_index:0,property:%28name:%27project%20id%27,source:properties,type:number%29,selected_property_type:number,type:string%29%29,segment_type:string,to_date:-1,type:general,unit:hour">slow queries</a>)</p>
-      		</div>
+            <p class="tooltip">The top projects by the number of slow queries (latency more than 5 seconds) as seen by the read api. Lower is better. (<a target="_blank" href="https://mixpanel.com/report/620033/segmentation/#action:segment,arb_event:%27API%20request%27,bool_op:or,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,filter:%28operand:%275000%27,operator:%3E%29,property:%28name:elapsed,source:properties,type:number%29,selected_property_type:number,type:number%29,%28dropdown_tab_index:0,property:%28name:%27project%20id%27,source:properties,type:number%29,selected_property_type:number,type:string%29%29,segment_type:string,to_date:-1,type:general,unit:hour">slow queries</a>)</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -620,8 +621,8 @@
         <div class="header">
           <div class="title">Number of Event Queries by query origin</div>
           <div class="help-tip">
-      			<p class="tooltip">The number of queries as seen by the arb distributed query server, segmented on the query origin. Higher is better. (<a  target="_blank" href="https://mixpanel.com/report/29988/segmentation/#action:segment,arb_event:query,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,ms_checked:%28api:!t,notifications:!t,undefined:!t%29,ms_values:!%28api,notifications,undefined%29,segfilter:!%28%28dropdown_tab_index:0,property:%28name:query_origin,source:properties,type:string%29,selected_property_type:string,type:string%29%29,segment_type:string,to_date:0,type:general,unit:hour">source</a>)</p>
-      		</div>
+            <p class="tooltip">The number of queries as seen by the arb distributed query server, segmented on the query origin. Higher is better. (<a  target="_blank" href="https://mixpanel.com/report/29988/segmentation/#action:segment,arb_event:query,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,ms_checked:%28api:!t,notifications:!t,undefined:!t%29,ms_values:!%28api,notifications,undefined%29,segfilter:!%28%28dropdown_tab_index:0,property:%28name:query_origin,source:properties,type:string%29,selected_property_type:string,type:string%29%29,segment_type:string,to_date:0,type:general,unit:hour">source</a>)</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -629,8 +630,8 @@
         <div class="header">
           <div class="title">Number of People Queries by query origin</div>
           <div class="help-tip">
-      			<p class="tooltip">The number of queries as seen by the engage distributed query server, segmented on the query origin. Higher is better. (<a  target="_blank" href="https://mixpanel.com/report/399213/segmentation/#action:segment,arb_event:query,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,ms_checked:%28api:!t,notifications:!t,undefined:!t%29,segfilter:!%28%28dropdown_tab_index:0,property:%28name:query_origin,source:properties,type:string%29,selected_property_type:string,type:string%29%29,segment_type:string,to_date:0,type:general,unit:hour">source</a>)</p>
-      		</div>
+            <p class="tooltip">The number of queries as seen by the engage distributed query server, segmented on the query origin. Higher is better. (<a  target="_blank" href="https://mixpanel.com/report/399213/segmentation/#action:segment,arb_event:query,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,ms_checked:%28api:!t,notifications:!t,undefined:!t%29,segfilter:!%28%28dropdown_tab_index:0,property:%28name:query_origin,source:properties,type:string%29,selected_property_type:string,type:string%29%29,segment_type:string,to_date:0,type:general,unit:hour">source</a>)</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -638,8 +639,8 @@
         <div class="header">
           <div class="title">The number of JQL vs non-JQL queries</div>
           <div class="help-tip">
-      			<p class="tooltip">The number of JQL vs non-JQL queries as seen by the read api. We want the number of JQL queries to increase and the number of non-JQL queries to decrease proportionately. (<a target="_blank" href="https://mixpanel.com/report/620033/segmentation/#action:segment,arb_event:%27API%20request%27,bool_op:or,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,filter:%28operand:jql,operator:in%29,property:%28name:endpoint,source:properties,type:string%29,selected_property_type:string,type:string%29,%28dropdown_tab_index:0,filter:%28operand:custom-query,operator:in%29,property:%28name:endpoint,source:properties,type:string%29,selected_property_type:string,type:string%29%29,to_date:-1,type:general,unit:hour">jql</a>, <a target="_blank" href="https://mixpanel.com/report/620033/segmentation/#action:segment,arb_event:%27API%20request%27,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,filter:%28operand:jql,operator:%27not%20in%27%29,property:%28name:endpoint,source:properties,type:string%29,selected_property_type:string,type:string%29,%28dropdown_tab_index:0,filter:%28operand:custom-query,operator:%27not%20in%27%29,property:%28name:endpoint,source:properties,type:string%29,selected_property_type:string,type:string%29%29,to_date:-1,type:general,unit:hour">non jql</a>)</p>
-      		</div>
+            <p class="tooltip">The number of JQL vs non-JQL queries as seen by the read api. We want the number of JQL queries to increase and the number of non-JQL queries to decrease proportionately. (<a target="_blank" href="https://mixpanel.com/report/620033/segmentation/#action:segment,arb_event:%27API%20request%27,bool_op:or,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,filter:%28operand:jql,operator:in%29,property:%28name:endpoint,source:properties,type:string%29,selected_property_type:string,type:string%29,%28dropdown_tab_index:0,filter:%28operand:custom-query,operator:in%29,property:%28name:endpoint,source:properties,type:string%29,selected_property_type:string,type:string%29%29,to_date:-1,type:general,unit:hour">jql</a>, <a target="_blank" href="https://mixpanel.com/report/620033/segmentation/#action:segment,arb_event:%27API%20request%27,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,filter:%28operand:jql,operator:%27not%20in%27%29,property:%28name:endpoint,source:properties,type:string%29,selected_property_type:string,type:string%29,%28dropdown_tab_index:0,filter:%28operand:custom-query,operator:%27not%20in%27%29,property:%28name:endpoint,source:properties,type:string%29,selected_property_type:string,type:string%29%29,to_date:-1,type:general,unit:hour">non jql</a>)</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -647,8 +648,8 @@
         <div class="header">
           <div class="title">The number of ML and non ML queries</div>
           <div class="help-tip">
-      			<p class="tooltip">The number of ML queries as seen by the arb local query server vs. the ones not from ML (<a target="_blank" href="https://mixpanel.com/report/29988/segmentation/#action:segment,arb_event:subquery,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,property:%28name:query_origin,source:properties,type:string%29,selected_property_type:string,type:string%29%29,segment_type:string,to_date:0,type:general,unit:hour">source</a>)</p>
-      		</div>
+            <p class="tooltip">The number of ML queries as seen by the arb local query server vs. the ones not from ML (<a target="_blank" href="https://mixpanel.com/report/29988/segmentation/#action:segment,arb_event:subquery,bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-3,segfilter:!%28%28dropdown_tab_index:0,property:%28name:query_origin,source:properties,type:string%29,selected_property_type:string,type:string%29%29,segment_type:string,to_date:0,type:general,unit:hour">source</a>)</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -699,6 +700,18 @@
             <div class="help-tip">
                 <p class="tooltip">Right now, this is simply the number of Fabric commands we've run that are related to deploying services. It is a loose approximation of the amount of production changes that happened. (<a target="_blank" href="https://mixpanel.com/report/945801/segmentation/#action:segment,arb_event:'Fabric%20command',bool_op:or,chart_analysis_type:linear,chart_type:line,from_date:-365,ms_checked:(copy_artifact:!t,deploy:!t,deploy_apibalancer_nginx_config:!t,deploy_batcher:!t,deploy_collectd:!t,deploy_cron:!t,deploy_nagios_conf:!t,deploy_nagios_hosts:!t,deploy_queue_filler:!t,deploy_sender:!t,release_deploy_lock:!t,stage_and_deploy:!t),ms_values:!(stage_and_deploy,copy_artifact,release_deploy_lock,deploy_nagios_conf,deploy_batcher,deploy,deploy_sender,deploy_nagios_hosts,deploy_cron,deploy_queue_filler,deploy_apibalancer_nginx_config,deploy_collectd),segfilter:!((dropdown_tab_index:1,filter:(operand:deploy,operator:in),property:(name:task,no_second_icon:!t,source:properties,type:string),selected_property_type:string,type:string),(dropdown_tab_index:0,filter:(operand:copy_artifact,operator:in),property:(name:task,source:properties,type:string),selected_property_type:string,type:string),(dropdown_tab_index:0,property:(name:task,source:properties,type:string),selected_property_type:string,type:string)),segment_type:string,to_date:0,type:unique,unit:month">source</a>)</p>
             </div>
+        </div>
+        <div class="body"></div>
+      </div>
+    </div>
+    
+    <div class="charts section mobile" style="display: none;">
+      <div class="chart sdk-unique-integrations">
+        <div class="header">
+          <div class="title">Unique SDK integrations</div>
+          <div class="help-tip">
+            <p class="tooltip">The number of unique projects that integrates Mixpanel SDK for their analytics solution. Is unique per token.</p>
+          </div>
         </div>
         <div class="body"></div>
       </div>
@@ -1641,7 +1654,7 @@
         });
       }, // End systems
       'sre': function() {
-      	var unit = $('.unit-select').val();
+        var unit = $('.unit-select').val();
         var intervals = $('.intervals-input').val();
         var startDate = moment().subtract(intervals, unit);
         var endDate = moment();
@@ -1740,7 +1753,32 @@
         
         // End Fab
         
-      } // End sre
+      }, // End SRE
+      'mobile': function() {
+        var unit = $('.unit-select').val();
+        var intervals = $('.intervals-input').val();
+        var startDate = moment().subtract(intervals, unit);
+        var endDate = moment();
+        var globalParams = {
+          unit: unit,
+          from_date: startDate.format('YYYY-MM-DD'),
+          to_date: endDate.format('YYYY-MM-DD')
+        }
+        // SDK Integrations
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 983927}).done(function(creds) {
+          
+          var data = _.extend(globalParams, {
+            event: "Integration",
+            where: "(\"Android\" == properties[\"mp_lib\"]) or (\"iphone\" == properties[\"mp_lib\"]) or (\"unity\" == properties[\"mp_lib\"])",
+            on: "properties[\"mp_lib\"]",
+            type: "unique"
+          })
+          
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(data, creds.apiKey, creds.apiSecret)).done(function(results) {
+            $('.chart.sdk-unique-integrations .body').MPChart('setData', results.data.values);
+          })
+        }); // End SDK Integrations
+      }
     }
     
     var runQuery = function() {
