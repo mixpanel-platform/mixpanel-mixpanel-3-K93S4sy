@@ -715,6 +715,24 @@
         </div>
         <div class="body"></div>
       </div>
+      <div class="chart dashboard-app-unique-users">
+        <div class="header">
+          <div class="title">Unique users using the Mixpanel Dashboard app (DAU)</div>
+          <div class="help-tip">
+            <p class="tooltip">The number of unique users that made, at least, one API call using our dashboard app.</p>
+          </div>
+        </div>
+        <div class="body"></div>
+      </div>
+      <div class="chart dashboard-app-average-dashboard">
+        <div class="header">
+          <div class="title">Average dashboard views per user</div>
+          <div class="help-tip">
+            <p class="tooltip">Average dashboard views per user on a daily basis.</p>
+          </div>
+        </div>
+        <div class="body"></div>
+      </div>
     </div>
     
     <script type="text/jql" id="commonJQLQueryLib">
@@ -1778,6 +1796,52 @@
             $('.chart.sdk-unique-integrations .body').MPChart('setData', results.data.values);
           })
         }); // End SDK Integrations
+        
+        // Dashboard app usage
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 808249}).done(function(creds) {
+          var iosDashboardData = _.extend({}, globalParams, {
+            event: "$custom_event:137743",
+            type: "unique"
+          })
+          
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(iosDashboardData, creds.apiKey, creds.apiSecret)).done(function(iosResults) {
+            getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 917071}).done(function(androidCreds) {
+              var androidDashboardData = _.extend({}, globalParams, {
+                event: "$custom_event:187891",
+                type: "unique"
+              })
+              $.get("https://mixpanel.com/api/2.0/segmentation", signData(androidDashboardData, androidCreds.apiKey, androidCreds.apiSecret)).done(function(androidResults) {
+                $('.chart.dashboard-app-unique-users .body').MPChart('setData', {
+                 "ios": iosResults.data.values[iosDashboardData.event],
+                 "android": androidResults.data.values[androidDashboardData.event]
+                });
+              })
+            });
+          })
+        }); // End Dashboard app usage
+
+        // Average dashboard views
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 808249}).done(function(creds) {
+          var iosDashboardData = _.extend({}, globalParams, {
+            event: "Viewed Dashboard",
+            type: "average"
+          })
+          
+          $.get("https://mixpanel.com/api/2.0/segmentation", signData(iosDashboardData, creds.apiKey, creds.apiSecret)).done(function(iosResults) {
+            getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 917071}).done(function(androidCreds) {
+              var androidDashboardData = _.extend({}, globalParams, {
+                event: "Viewed Dashboard",
+                type: "average"
+              })
+              $.get("https://mixpanel.com/api/2.0/segmentation", signData(androidDashboardData, androidCreds.apiKey, androidCreds.apiSecret)).done(function(androidResults) {
+                $('.chart.dashboard-app-average-dashboard .body').MPChart('setData', {
+                 "ios": iosResults.data.values[iosDashboardData.event],
+                 "android": androidResults.data.values[androidDashboardData.event]
+                });
+              })
+            });
+          })
+        }); // Average dashboard views
       }
     }
     
