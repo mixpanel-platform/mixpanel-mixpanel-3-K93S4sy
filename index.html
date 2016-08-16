@@ -733,6 +733,24 @@
         </div>
         <div class="body"></div>
       </div>
+      <div class="chart dashboard-app-retention-14">
+        <div class="header">
+          <div class="title">2-week retention rate for the dashboard app.</div>
+          <div class="help-tip">
+            <p class="tooltip">Mixpanel Dashboard App two-week retention rate (in %) over time.</p>
+          </div>
+        </div>
+        <div class="body"></div>
+      </div>
+      <div class="chart dashboard-app-retention-30">
+        <div class="header">
+          <div class="title">1-month retention rate for the dashboard app.</div>
+          <div class="help-tip">
+            <p class="tooltip">Mixpanel Dashboard App four-week retention rate (in %) over time.</p>
+          </div>
+        </div>
+        <div class="body"></div>
+      </div>
     </div>
     
     <script type="text/jql" id="commonJQLQueryLib">
@@ -1842,6 +1860,72 @@
             });
           })
         }); // Average dashboard views
+        // Two-week % Four-week retention rate (dashboard app)
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 808249}).done(function(creds) {
+          var startDate = moment().subtract(intervals, unit);
+          var retentionData = {
+            from_date: startDate.format('YYYY-MM-DD'),
+            to_date: moment().subtract('1', 'week').format('YYYY-MM-DD'),
+            event: "$custom_event:137743",
+            segment_method: "first",
+            retention_type: "compounded",
+            unit: "week",
+            interval_count: "4"
+          }
+          
+          $.get("https://mixpanel.com/api/2.0/retention", signData(retentionData, creds.apiKey, creds.apiSecret)).done(function(results) {
+            var twoWeekIosResults = {}
+            var fourWeekIosResults = {}
+
+            for (var key in results) {
+              var twoWeekRetention = parseFloat((results[key].counts[2] * 100 / results[key].first).toFixed(2))
+              if (isNaN(twoWeekRetention)) {
+                twoWeekIosResults[key] = 0;
+              } else {
+                twoWeekIosResults[key] = twoWeekRetention;
+              }
+
+              var fourWeekRetention = parseFloat((results[key].counts[4] * 100 / results[key].first).toFixed(2))
+              if (isNaN(fourWeekRetention)) {
+                fourWeekIosResults[key] = 0;
+              } else {
+                fourWeekIosResults[key] = fourWeekRetention;
+              }
+            }
+
+            getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 917071}).done(function(androidCreds) {
+              retentionData.event = "$custom_event:187891";
+
+              $.get("https://mixpanel.com/api/2.0/retention", signData(retentionData, androidCreds.apiKey, androidCreds.apiSecret)).done(function(results) {
+                var twoWeekAndroidResults = {}
+                var fourWeekAndroidResults = {}
+                for (var key in results) {
+                  var twoWeekRetention = parseFloat((results[key].counts[2] * 100 / results[key].first).toFixed(2))
+                  if (isNaN(twoWeekRetention)) {
+                    twoWeekAndroidResults[key] = 0;
+                  } else {
+                    twoWeekAndroidResults[key] = twoWeekRetention;
+                  }
+
+                  var fourWeekRetention = parseFloat((results[key].counts[4] * 100 / results[key].first).toFixed(2))
+                  if (isNaN(fourWeekRetention)) {
+                    fourWeekAndroidResults[key] = 0;
+                  } else {
+                    fourWeekAndroidResults[key] = fourWeekRetention;
+                  }
+                }
+                $('.chart.dashboard-app-retention-14 .body').MPChart('setData', {
+                  "ios" : twoWeekIosResults,
+                  "android": twoWeekAndroidResults
+                });
+                $('.chart.dashboard-app-retention-30 .body').MPChart('setData', {
+                  "ios" : fourWeekIosResults,
+                  "android": fourWeekAndroidResults
+                });
+              });
+            });
+          })
+        }); // End two-week & four-week retention views
       }
     }
     
