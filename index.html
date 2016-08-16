@@ -1785,7 +1785,7 @@
         // SDK Integrations
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 983927}).done(function(creds) {
           
-          var data = _.extend(globalParams, {
+          var data = _.extend({}, globalParams, {
             event: "Integration",
             where: "(\"Android\" == properties[\"mp_lib\"]) or (\"iphone\" == properties[\"mp_lib\"]) or (\"unity\" == properties[\"mp_lib\"]) or (\"swift\" == properties[\"mp_lib\"])",
             on: "properties[\"mp_lib\"]",
