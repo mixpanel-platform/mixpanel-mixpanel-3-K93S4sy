@@ -1473,15 +1473,22 @@
           })
           
           $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_pre_sampling) {
-             var data = _.extend({}, globalParams, {
-               event: "track_events",
-               on: "number(properties[\"post_sampling\"])"
-             })
-             $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_post_sampling) {
-               $('.chart.report-track-events .body').MPChart('setData', {
-                 "track events pre sampling": results_pre_sampling.results,
-                 "track events post sampling": results_post_sampling.results
-               });
+              var data = _.extend({}, globalParams, {
+                event: "track_events",
+                on: "number(properties[\"post_sampling\"])"
+              })
+              $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_post_sampling) {
+                var data = _.extend({}, globalParams, {
+                  event: "track_events",
+                  on: "number(properties[\"ce_event\"])"
+                })
+                $.get("https://mixpanel.com/api/2.0/segmentation/sum", signData(data, creds.apiKey, creds.apiSecret)).done(function(results_ce_event) {
+                  $('.chart.report-track-events .body').MPChart('setData', {
+                    "track events pre sampling": results_pre_sampling.results,
+                    "track events post sampling": results_post_sampling.results,
+                    "track events ce events": results_ce_event.results
+                  });
+                })
              })
             
           })
