@@ -990,7 +990,7 @@
           .filter(deploymentsFilter)
           .groupBy(["properties.task", function (e) {return allignTimestampToDay(e.time / 1000)}], countElapsedReducer)
           .groupBy([function (e) {return e.key[0]}], reduceOnFirstField)
-          .map(fillDateGaps(function(){ return {elapsed:0, count:0}; }, function(a, b) { a.elapsed += b.elsapsed; a.count += b.count; return a; }))
+          .map(fillDateGaps(function(){ return {elapsed:0, count:0}; }, function(a, b) { a.elapsed += b.elapsed; a.count += b.count; return a; }))
           ;
         }    
     </script>
@@ -1013,32 +1013,12 @@
           return result;
         }
 
-        function fillDateGaps(t) {
-          var current = Date.parse(params.from_date) / 1000;
-          var end = Date.parse(params.to_date) / 1000;
-          var v = {};
-          while (current <= end) {
-            var currentDateKey = allignTimestamp(current).toISOString().split('T')[0];
-            var currentDate = timestampToDate(current).toISOString();
-            if (!v.hasOwnProperty(currentDateKey)) {
-              v[currentDateKey] = {success:0, failure:0};
-            }
-            if (t.value.hasOwnProperty(currentDate)) {
-              v[currentDateKey].success += t.value[currentDate].success;
-              v[currentDateKey].failure += t.value[currentDate].failure;
-            }
-            current += 24 * 60 * 60;
-          }
-          t.value = v;
-          return t;
-        }
-
         function main() {
           return Events({event_selectors: [{event: 'Buildbot step finished'}], from_date: params.from_date, to_date: params.to_date})
           .filter(function(e) {return e.properties.branch == "master"})
           .groupBy(["properties.step_name", function (e) {return allignTimestampToDay(e.time / 1000)}], resultReducer)
           .groupBy([function(e) {return e.key[0]}], reduceOnFirstField)
-          .map(fillDateGaps)
+          .map(fillDateGaps(function(){ return {success:0, failure:0}; }, function(a, b){ a.success += b.success; a.failure += b.failure; return a; }))
           ;
         }
     </script>
@@ -1058,32 +1038,12 @@
           return result;
         }
 
-        function fillDateGaps(t) {
-          var current = Date.parse(params.from_date) / 1000;
-          var end = Date.parse(params.to_date) / 1000;
-          var v = {};
-          while (current <= end) {
-            var currentDateKey = allignTimestamp(current).toISOString().split('T')[0];
-            var currentDate = timestampToDate(current).toISOString();
-            if (!v.hasOwnProperty(currentDateKey)) {
-              v[currentDateKey] = {elapsed:0, count:0};
-            }
-            if (t.value.hasOwnProperty(currentDate)) {
-              v[currentDateKey].elapsed += t.value[currentDate].elapsed;
-              v[currentDateKey].count += t.value[currentDate].count;
-            }
-            current += 24 * 60 * 60;
-          }
-          t.value = v;
-          return t;
-        }
-
         function main() {
           return Events({event_selectors: [{event: 'Buildbot finished'}], from_date: params.from_date, to_date: params.to_date})
           .filter(function(e) {return e.properties.branch == "master" && e.properties.build_status == "success"})
           .groupBy([function (e) {return "Master"}, function (e) {return allignTimestampToDay(e.time / 1000)}], resultReducer)
           .groupBy([function(e) {return e.key[0]}], reduceOnFirstField)
-          .map(fillDateGaps)
+          .map(fillDateGaps(function(){ return {elapsed:0, count:0}; }, function(a, b) { a.elapsed += b.elapsed; a.count += b.count; return a; }))
           ;
         }
     </script>
