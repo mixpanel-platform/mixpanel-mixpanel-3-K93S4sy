@@ -852,6 +852,30 @@
           }
           return result;
         }
+
+        function fillDateGaps(def, concat) {
+          function _fillDateGaps(t) {
+            var current = Date.parse(params.from_date) / 1000;
+            var end = Date.parse(params.to_date) / 1000;
+            var v = {};
+            while (current <= end) {
+              var currentDateKey = allignTimestamp(current).toISOString().split('T')[0];
+              if (!v.hasOwnProperty(currentDateKey)) {
+                v[currentDateKey] = def();
+              }
+              current += 24 * 60 * 60;
+            }
+            for (var k in t.value) {
+              var currentDateKey = allignTimestamp(Date.parse(k) / 1000).toISOString().split('T')[0];
+              if (v.hasOwnProperty(currentDateKey)) {
+                v[currentDateKey] = concat(v[currentDateKey], t.value[k]);
+              }
+            }
+            t.value = v;
+            return t;
+          }
+          return _fillDateGaps;
+        }
     </script>
     
     <script type="text/jql" id="pageEscalationsQuery">
@@ -863,32 +887,13 @@
           }
         }
 
-        function fillDateGaps(t) {
-          var current = Date.parse(params.from_date) / 1000;
-          var end = Date.parse(params.to_date) / 1000;
-          var v = {};
-          while (current <= end) {
-            var currentDateKey = allignTimestamp(current).toISOString().split('T')[0];
-            var currentDate = timestampToDate(current);
-            if (!v.hasOwnProperty(currentDateKey)) {
-              v[currentDateKey] = 0;
-            }
-            if (t.value.hasOwnProperty(currentDate)) {
-              v[currentDateKey] += t.value[currentDate];
-            }
-            current += 24 * 60 * 60;
-          }
-          t.value = v;
-          return t;
-        }
-
         function main() {
             return join(Events({from_date: params.from_date, to_date: params.to_date, event_selectors: [{event: 'pagerduty.incident.escalate'}]}), People())
             .filter(function (t) {return t.event !== undefined && t.user !== undefined && t.event.properties.channel.type == "timeout"})
             .groupBy([escalationPolicyName/*, isExplicitEscalation*/, function (t) {return allignTimestampToDay(t.event.time / 1000)}/*, "event.distinct_id"*/], mixpanel.reducer.count())
             //.groupBy([function (t) {return [t.key[0] + " " + t.key[1], t.key[2]]}], mixpanel.reducer.count())
             .groupBy([function (t) {return t.key[0]}], dateReducer)
-            .map(fillDateGaps)
+            .map(fillDateGaps(function() {return 0;}, function(a, b){return a + b;}))
             ;
         }
     </script>
@@ -976,26 +981,6 @@
           return result;
         }
 
-        function fillDateGaps(t) {
-          var current = Date.parse(params.from_date) / 1000;
-          var end = Date.parse(params.to_date) / 1000;
-          var v = {};
-          while (current <= end) {
-            var currentDateKey = allignTimestamp(current).toISOString().split('T')[0];
-            var currentDate = timestampToDate(current).toISOString();
-            if (!v.hasOwnProperty(currentDateKey)) {
-              v[currentDateKey] = {elapsed:0, count:0};
-            }
-            if (t.value.hasOwnProperty(currentDate)) {
-              v[currentDateKey].elapsed += t.value[currentDate].elapsed;
-              v[currentDateKey].count += t.value[currentDate].count;
-            }
-            current += 24 * 60 * 60;
-          }
-          t.value = v;
-          return t;
-        }
-
         function main() {
           return Events({
             from_date: params.from_date,
@@ -1005,7 +990,7 @@
           .filter(deploymentsFilter)
           .groupBy(["properties.task", function (e) {return allignTimestampToDay(e.time / 1000)}], countElapsedReducer)
           .groupBy([function (e) {return e.key[0]}], reduceOnFirstField)
-          .map(fillDateGaps)
+          .map(fillDateGaps(function(){ return {elapsed:0, count:0}; }, function(a, b) { a.elapsed += b.elsapsed; a.count += b.count; return a; }))
           ;
         }    
     </script>
