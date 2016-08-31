@@ -875,7 +875,7 @@
             current += 24 * 60 * 60;
           }
           for (var k in t.value) {
-            var currentDateKey = allignTimestamp(k).toISOString().split('T')[0];
+            var currentDateKey = allignTimestamp(Date.parse(k) / 1000).toISOString().split('T')[0];
             if (v.hasOwnProperty(currentDateKey)) {
               v[currentDateKey].success += t.value[k].success;
               v[currentDateKey].failure += t.value[k].failure;
