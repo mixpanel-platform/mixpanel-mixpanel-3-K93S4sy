@@ -674,21 +674,21 @@
         <div class="body"></div>
       </div>
       
-      <div class="chart build-bot-failure">
-        <div class="header">
-          <div class="title">Test failures on master</div>
-            <div class="help-tip">
-                <p class="tooltip">Continuous integration tests run on the build system that failed on master. These shouldn't happen as a general rule and disruptive to other teams.They are broken out by stage. (<a target="_blank" href="https://mixpanel.com/report/945801/segmentation/#action:segment,arb_event:'Buildbot%20step%20finished',bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-365,ms_checked:('build%20and%20setup':!t,'clean%20repo%20test':!t,'clean%20shutdown':!t,'clojure%20tests':!t,'go%20tests':!t,'js%20tests':!t,'other%20tests':!t,'processing%20tests':!t),ms_values:!('go%20tests','other%20tests','processing%20tests','clojure%20tests','clean%20shutdown','clean%20repo%20test','build%20and%20setup','js%20tests'),segfilter:!((dropdown_tab_index:0,filter:(operand:!(master),operator:%3D%3D),property:(name:branch,source:properties,type:string),selected_property_type:string,type:string),(dropdown_tab_index:0,filter:(operand:!(success),operator:'!!%3D'),property:(name:step_status,source:properties,type:string),selected_property_type:string,type:string),(dropdown_tab_index:0,property:(name:step_name,source:properties,type:string),selected_property_type:string,type:string)),segment_type:string,to_date:0,type:unique,unit:month">source</a>)</p>
-            </div>
-        </div>
-        <div class="body"></div>
-      </div>
-      
       <div class="chart build-bot-test-time">
         <div class="header">
           <div class="title">Average time to run tests (in seconds).</div>
             <div class="help-tip">
                 <p class="tooltip">(<a target="_blank" href="https://mixpanel.com/report/945801/segmentation/#action:average,arb_event:'Buildbot%20finished',bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-365,ms_checked:('Buildbot%20finished':!t),ms_values:!('Buildbot%20finished'),segfilter:!((dropdown_tab_index:0,filter:(operand:!(success),operator:%3D%3D),property:(name:build_status,source:properties,type:string),selected_property_type:string,type:string),(dropdown_tab_index:0,property:(name:build_elapsed_sec,source:properties,type:number),selected_property_type:number,type:number)),segment_type:number,to_date:0,type:unique,unit:month">source</a>)</p>
+            </div>
+        </div>
+        <div class="body"></div>
+      </div>
+      
+      <div class="chart build-bot-failure">
+        <div class="header">
+          <div class="title">Test failures on master</div>
+            <div class="help-tip">
+                <p class="tooltip">Continuous integration tests run on the build system that failed on master. These shouldn't happen as a general rule and disruptive to other teams.They are broken out by stage. (<a target="_blank" href="https://mixpanel.com/report/945801/segmentation/#action:segment,arb_event:'Buildbot%20step%20finished',bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-365,ms_checked:('build%20and%20setup':!t,'clean%20repo%20test':!t,'clean%20shutdown':!t,'clojure%20tests':!t,'go%20tests':!t,'js%20tests':!t,'other%20tests':!t,'processing%20tests':!t),ms_values:!('go%20tests','other%20tests','processing%20tests','clojure%20tests','clean%20shutdown','clean%20repo%20test','build%20and%20setup','js%20tests'),segfilter:!((dropdown_tab_index:0,filter:(operand:!(master),operator:%3D%3D),property:(name:branch,source:properties,type:string),selected_property_type:string,type:string),(dropdown_tab_index:0,filter:(operand:!(success),operator:'!!%3D'),property:(name:step_status,source:properties,type:string),selected_property_type:string,type:string),(dropdown_tab_index:0,property:(name:step_name,source:properties,type:string),selected_property_type:string,type:string)),segment_type:string,to_date:0,type:unique,unit:month">source</a>)</p>
             </div>
         </div>
         <div class="body"></div>
@@ -819,8 +819,8 @@
           return result;
         }
         
-        //TODO: dateReducer can be done as reduceOnFirstField
-        function reduceOnFirstField(a, b) { 
+        //TODO: dateReducer can be done as reduceOnTheFirstField
+        function reduceOnTheFirstField(a, b) { 
           result = {};
           
           for (var i in a) {
@@ -876,6 +876,54 @@
           }
           return _fillDateGaps;
         }
+        
+        function filterJenkinsMasterBuilds(r) {
+          return r.user !== undefined && r.event !== undefined  && r.user.properties.job !== undefined && r.user.properties.job.NAME == "master" && r.user.properties.git !== undefined && r.user.properties.git.BRANCH == "origin/master";
+        }
+
+        var jenkinsBuildEvents = [{event: 'jenkins.build.start'}, {event: 'jenkins.build.finish'}, {event: 'jenkins.step.start'}, {event: 'jenkins.step.finish'}];
+
+        function jenkinsBuildsReducer(a, b) {
+          result = {start: undefined, finish: undefined, status: undefined, steps: {}};
+          
+          for (var i in a) {
+            if (a[i].start !== undefined) {
+              result.start = a[i].start;
+            }
+            if (a[i].finish !== undefined) {
+              result.finish = a[i].finish;
+              result.status = a[i].status;
+            }
+            for (var j in a[i].steps) {
+              result.steps[j] = a[i].steps[j];
+            }
+          }
+          
+          for (var i in b) {
+            if (b[i].event.name == "jenkins.build.start") {
+              result.start = b[i].event.time;
+            } else if (b[i].event.name == "jenkins.build.finish") {
+              result.finish = b[i].event.time;
+              result.status = b[i].event.properties.status;
+            } else {
+              key = b[i].event.properties.step;
+              if (b[i].event.properties.parameters !== undefined) {
+                key = key + '.' + b[i].event.properties.parameters.join('-');
+              }
+              if (!result.steps.hasOwnProperty(key)) {
+                result.steps[key] = {start: undefined, finish: undefined, status: undefined};
+              }
+              if (b[i].event.name == "jenkins.step.start") {
+                result.steps[key].start = b[i].event.time;
+              } else {
+                result.steps[key].finish = b[i].event.time;
+                result.steps[key].status = b[i].event.properties.status;
+              }
+            }
+          }
+          return result;
+        }
+
     </script>
     
     <script type="text/jql" id="pageEscalationsQuery">
@@ -989,7 +1037,7 @@
           })
           .filter(deploymentsFilter)
           .groupBy(["properties.task", function (e) {return allignTimestampToDay(e.time / 1000)}], countElapsedReducer)
-          .groupBy([function (e) {return e.key[0]}], reduceOnFirstField)
+          .groupBy([function (e) {return e.key[0]}], reduceOnTheFirstField)
           .map(fillDateGaps(function(){ return {elapsed:0, count:0}; }, function(a, b) { a.elapsed += b.elapsed; a.count += b.count; return a; }))
           ;
         }    
@@ -1020,7 +1068,7 @@
           return Events({event_selectors: [{event: 'Buildbot step finished'}], from_date: params.from_date, to_date: params.to_date})
           .filter(function(e) {return e.properties.branch == "master"})
           .groupBy(["properties.step_name", function (e) {return allignTimestampToDay(e.time / 1000)}], resultReducer)
-          .groupBy([function(e) {return e.key[0]}], reduceOnFirstField)
+          .groupBy([function(e) {return e.key[0]}], reduceOnTheFirstField)
           .map(fillDateGaps(function(){ return {success:0, failure:0}; }, function(a, b){ a.success += b.success; a.failure += b.failure; return a; }))
           ;
         }
@@ -1045,8 +1093,24 @@
           return Events({event_selectors: [{event: 'Buildbot finished'}], from_date: params.from_date, to_date: params.to_date})
           .filter(function(e) {return e.properties.branch == "master" && e.properties.build_status == "success"})
           .groupBy([function (e) {return "Master"}, function (e) {return allignTimestampToDay(e.time / 1000)}], resultReducer)
-          .groupBy([function(e) {return e.key[0]}], reduceOnFirstField)
+          .groupBy([function(e) {return e.key[0]}], reduceOnTheFirstField)
           .map(fillDateGaps(function(){ return {elapsed:0, count:0}; }, function(a, b) { a.elapsed += b.elapsed; a.count += b.count; return a; }))
+          ;
+        }
+    </script>
+
+    <script type="text/jql" id="jenkinsTimeQuery">
+        function main() {
+          return join(
+            People(),
+            Events({event_selectors: jenkinsBuildEvents, from_date: params.from_date, to_date: params.to_date})
+            )
+            .filter(filterJenkinsMasterBuilds)
+            .groupBy(["event.distinct_id"], jenkinsBuildsReducer)
+            .filter(function (r) {return r.value.status == "success"})
+            .map(function (r) { return {"key":["Master", allignTimestampToDay(r.value.start / 1000)], "value": {"elapsed": (r.value.finish - r.value.start) / 1000, "count": 1}}; })
+            .groupBy([function(r) {return r.key[0]}], reduceOnTheFirstField)
+            .map(fillDateGaps(function(){ return {elapsed:0, count:0}; }, function(a, b) { a.elapsed += b.elapsed; a.count += b.count; return a; }))
           ;
         }
     </script>
@@ -1707,19 +1771,30 @@
           $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData({
             params: JSON.stringify(globalParams),
             script: $.trim($("#commonJQLQueryLib").html()) + "\n" + $.trim($("#buildBotTimeQuery").html()),
-          }, creds.apiKey, creds.apiSecret)).done(function(results) {
-            var chart_data = {};
-            for (var i in results) {
-                chart_data[results[i].key[0]] = {}
-                for (var k in results[i].value) {
+          }, creds.apiKey, creds.apiSecret)).done(function(buildbot_results) {
+            $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData({
+              params: JSON.stringify(globalParams),
+              script: $.trim($("#commonJQLQueryLib").html()) + "\n" + $.trim($("#jenkinsTimeQuery").html()),
+            }, creds.apiKey, creds.apiSecret)).done(function(jenkins_results) {
+              var chart_data = {};
+              builds = [["Buildbot", buildbot_results], ["Jenkins", jenkins_results]]
+              for (var j in builds)
+              {
+                name = builds[j][0];
+                results = builds[j][1];
+                for (var i in results) {
+                  chart_data[name] = {};
+                  for (var k in results[i].value) {
                     if (results[i].value[k].count > 0) {
-                       chart_data[results[i].key[0]][k] = results[i].value[k].elapsed / results[i].value[k].count;
+                      chart_data[name][k] = Math.floor(results[i].value[k].elapsed / results[i].value[k].count);
                     } else {
-                       chart_data[results[i].key[0]][k] = 0
+                      chart_data[name][k] = 0;
                     }
+                  }
                 }
-            }
-            $('.chart.build-bot-test-time .body').MPChart('setData', chart_data);
+              }
+              $('.chart.build-bot-test-time .body').MPChart('setData', chart_data);
+            })
           })
         });
         // End Buildbot Test Time
