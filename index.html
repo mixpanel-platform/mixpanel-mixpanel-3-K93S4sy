@@ -882,6 +882,12 @@
         }
 
         var jenkinsBuildEvents = [{event: 'jenkins.build.start'}, {event: 'jenkins.build.finish'}, {event: 'jenkins.step.start'}, {event: 'jenkins.step.finish'}];
+        
+        function jenkinsStartDate(dt) {
+           var requestedStart = Date.parse(dt) / 1000;
+           var dataStart = Date.parse("2016-07-26") / 1000;
+           return allignTimestampToDay(Math.max(requestedStart, dataStart)).toISOString().split('T')[0];
+        }
 
         function jenkinsBuildsReducer(a, b) {
           result = {start: undefined, finish: undefined, status: undefined, steps: {}};
@@ -1103,11 +1109,11 @@
         function main() {
           return join(
             People(),
-            Events({event_selectors: jenkinsBuildEvents, from_date: params.from_date, to_date: params.to_date})
+            Events({event_selectors: jenkinsBuildEvents, from_date: jenkinsStartDate(params.from_date), to_date: params.to_date})
             )
             .filter(filterJenkinsMasterBuilds)
             .groupBy(["event.distinct_id"], jenkinsBuildsReducer)
-            .filter(function (r) {return r.value.status == "success"})
+            .filter(function (r) {return r.value.status == "success" && r.value.start !== undefined})
             .map(function (r) { return {"key":["Master", allignTimestampToDay(r.value.start / 1000)], "value": {"elapsed": (r.value.finish - r.value.start) / 1000, "count": 1}}; })
             .groupBy([function(r) {return r.key[0]}], reduceOnTheFirstField)
             .map(fillDateGaps(function(){ return {elapsed:0, count:0}; }, function(a, b) { a.elapsed += b.elapsed; a.count += b.count; return a; }))
