@@ -686,9 +686,19 @@
       
       <div class="chart build-bot-failure">
         <div class="header">
-          <div class="title">Test failures on master</div>
+          <div class="title">Buildbot test failures on master</div>
             <div class="help-tip">
                 <p class="tooltip">Continuous integration tests run on the build system that failed on master. These shouldn't happen as a general rule and disruptive to other teams.They are broken out by stage. (<a target="_blank" href="https://mixpanel.com/report/945801/segmentation/#action:segment,arb_event:'Buildbot%20step%20finished',bool_op:and,chart_analysis_type:linear,chart_type:line,from_date:-365,ms_checked:('build%20and%20setup':!t,'clean%20repo%20test':!t,'clean%20shutdown':!t,'clojure%20tests':!t,'go%20tests':!t,'js%20tests':!t,'other%20tests':!t,'processing%20tests':!t),ms_values:!('go%20tests','other%20tests','processing%20tests','clojure%20tests','clean%20shutdown','clean%20repo%20test','build%20and%20setup','js%20tests'),segfilter:!((dropdown_tab_index:0,filter:(operand:!(master),operator:%3D%3D),property:(name:branch,source:properties,type:string),selected_property_type:string,type:string),(dropdown_tab_index:0,filter:(operand:!(success),operator:'!!%3D'),property:(name:step_status,source:properties,type:string),selected_property_type:string,type:string),(dropdown_tab_index:0,property:(name:step_name,source:properties,type:string),selected_property_type:string,type:string)),segment_type:string,to_date:0,type:unique,unit:month">source</a>)</p>
+            </div>
+        </div>
+        <div class="body"></div>
+      </div>
+      
+      <div class="chart jenkins-failure">
+        <div class="header">
+          <div class="title">Jenkins test failures on master</div>
+            <div class="help-tip">
+                <p class="tooltip">Continuous integration tests run on the build system that failed on master. These shouldn't happen as a general rule and disruptive to other teams.They are broken out by stage. </p>
             </div>
         </div>
         <div class="body"></div>
@@ -888,6 +898,14 @@
            var dataStart = Date.parse("2016-07-26") / 1000;
            return allignTimestampToDay(Math.max(requestedStart, dataStart)).toISOString().split('T')[0];
         }
+        
+        function jenkinsStepName(e) {
+          key = e.properties.step;
+          if (e.properties.parameters !== undefined) {
+            key = key + '.' + e.properties.parameters.join('-');
+          }
+          return key;
+        }
 
         function jenkinsBuildsReducer(a, b) {
           result = {start: undefined, finish: undefined, status: undefined, steps: {}};
@@ -912,10 +930,7 @@
               result.finish = b[i].event.time;
               result.status = b[i].event.properties.status;
             } else {
-              key = b[i].event.properties.step;
-              if (b[i].event.properties.parameters !== undefined) {
-                key = key + '.' + b[i].event.properties.parameters.join('-');
-              }
+              key = jenkinsStepName(b[i].event);
               if (!result.steps.hasOwnProperty(key)) {
                 result.steps[key] = {start: undefined, finish: undefined, status: undefined};
               }
@@ -1079,6 +1094,41 @@
           ;
         }
     </script>
+    
+    <script type="text/jql" id="jenkinsFailureRateQuery">
+        function resultReducer(a, b) {
+          result = {success: 0, failure: 0};
+          for (var i in a) {
+            result.success += a[i].success;
+            result.failure += a[i].failure;
+          }
+          
+          for (var i in b) {
+            if (b[i].event.properties.status == "skipped" || b[i].event.properties.status === undefined) {
+              continue;
+            }
+            if (b[i].event.properties.status != "success") {
+              result.failure += 1;
+            } else {
+              result.success += 1;
+            }
+          }
+          return result;
+        }
+
+        function main() {
+          return join(
+            People(),
+            Events({event_selectors: [{event: 'jenkins.step.finish'}], from_date: jenkinsStartDate(params.from_date), to_date: params.to_date})
+            )
+          .filter(filterJenkinsMasterBuilds)
+          .groupBy([function(r) { return jenkinsStepName(r.event); }, function (r) {return allignTimestampToDay(r.event.time / 1000)}], resultReducer)
+          .groupBy([function(e) {return e.key[0]}], reduceOnTheFirstField)
+          .map(fillDateGaps(function(){ return {success:0, failure:0}; }, function(a, b){ a.success += b.success; a.failure += b.failure; return a; }))
+          ;
+        }
+    </script>
+
     
     <script type="text/jql" id="buildBotTimeQuery">
         function resultReducer(a, b) {
@@ -1758,6 +1808,24 @@
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 945801}).done(function(creds) {
           $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData({
             params: JSON.stringify(globalParams),
+            script: $.trim($("#commonJQLQueryLib").html()) + "\n" + $.trim($("#jenkinsFailureRateQuery").html()),
+          }, creds.apiKey, creds.apiSecret)).done(function(results) {
+            var chart_data = {};
+            for (var i in results) {
+                chart_data[results[i].key[0]] = {}
+                for (var k in results[i].value) {
+                    chart_data[results[i].key[0]][k] = results[i].value[k].failure;
+                }
+            }
+            $('.chart.jenkins-failure .body').MPChart('setData', chart_data);
+          })
+        });
+        // End Buildbot Failure
+        
+        // Jenkins Failure
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 945801}).done(function(creds) {
+          $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData({
+            params: JSON.stringify(globalParams),
             script: $.trim($("#commonJQLQueryLib").html()) + "\n" + $.trim($("#buildBotFailureRateQuery").html()),
           }, creds.apiKey, creds.apiSecret)).done(function(results) {
             var chart_data = {};
@@ -1770,7 +1838,7 @@
             $('.chart.build-bot-failure .body').MPChart('setData', chart_data);
           })
         });
-        // End Buildbot Failure
+        // End Jenkins Failure
         
         //Buildbot Test Time
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 945801}).done(function(creds) {
