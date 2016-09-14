@@ -27,7 +27,7 @@
       .top {
         position: relative;
       }
-      
+
       .top .controls {
         position: absolute;
         right: 26px;
@@ -945,6 +945,27 @@
           return result;
         }
 
+        function jenkinsFailedStep(build) {
+          if (build.status == "success") {
+            return "success";
+          }
+
+          step = "unknown";
+          step_finish = undefined;
+          
+          for (var i in build.steps) {
+            if (
+              build.steps[i].status == "failure" && 
+              build.steps[i].finish !== undefined &&
+              (step_finish === undefined || build.steps[i].finish < step_finish)
+            ) {
+              step = i;
+              step_finish = build.steps[i].finish;
+            }
+          }
+          return step;
+        }
+
     </script>
     
     <script type="text/jql" id="pageEscalationsQuery">
@@ -1096,35 +1117,17 @@
     </script>
     
     <script type="text/jql" id="jenkinsFailureRateQuery">
-        function resultReducer(a, b) {
-          result = {success: 0, failure: 0};
-          for (var i in a) {
-            result.success += a[i].success;
-            result.failure += a[i].failure;
-          }
-          
-          for (var i in b) {
-            if (b[i].event.properties.status == "skipped" || b[i].event.properties.status === undefined) {
-              continue;
-            }
-            if (b[i].event.properties.status != "success") {
-              result.failure += 1;
-            } else {
-              result.success += 1;
-            }
-          }
-          return result;
-        }
-
         function main() {
           return join(
             People(),
-            Events({event_selectors: [{event: 'jenkins.step.finish'}], from_date: jenkinsStartDate(params.from_date), to_date: params.to_date})
+            Events({event_selectors: jenkinsBuildEvents, from_date: jenkinsStartDate(params.from_date), to_date: params.to_date})
             )
-          .filter(filterJenkinsMasterBuilds)
-          .groupBy([function(r) { return jenkinsStepName(r.event); }, function (r) {return allignTimestampToDay(r.event.time / 1000)}], resultReducer)
-          .groupBy([function(e) {return e.key[0]}], reduceOnTheFirstField)
-          .map(fillDateGaps(function(){ return {success:0, failure:0}; }, function(a, b){ a.success += b.success; a.failure += b.failure; return a; }))
+            .filter(filterJenkinsMasterBuilds)
+            .groupBy(["event.distinct_id"], jenkinsBuildsReducer)
+            .filter(function (r) {return r.value.start !== undefined})
+            .groupBy([function(r) { return jenkinsFailedStep(r.value); }, function (r) {return allignTimestampToDay(r.value.start / 1000)}], mixpanel.reducer.count())
+            .groupBy([function (t) {return t.key[0]}], dateReducer)
+            .map(fillDateGaps(function() {return 0;}, function(a, b){return a + b;}))
           ;
         }
     </script>
@@ -1812,9 +1815,12 @@
           }, creds.apiKey, creds.apiSecret)).done(function(results) {
             var chart_data = {};
             for (var i in results) {
+                if (results[i].key[0] == "success") {
+                    continue;
+                }
                 chart_data[results[i].key[0]] = {}
                 for (var k in results[i].value) {
-                    chart_data[results[i].key[0]][k] = results[i].value[k].failure;
+                    chart_data[results[i].key[0]][k] = results[i].value[k];
                 }
             }
             $('.chart.jenkins-failure .body').MPChart('setData', chart_data);
@@ -2091,3 +2097,4 @@
     </script>
   </body>
 </html>
+
