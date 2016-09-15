@@ -1379,7 +1379,7 @@
           from_date: startDate.format('YYYY-MM-DD'),
           to_date: endDate.format('YYYY-MM-DD'),
           x_unit: unit,
-          where: '(properties["Current tally"] + properties["Collect everything event tally"]) > 100 > 100 and not "@mixpanel.com" in properties["$email"]'
+          where: '(properties["Current tally"] + properties["Collect everything event tally"]) > 100 and not "@mixpanel.com" in properties["$email"]'
         })
           .done(function(resp) { 
             data = {};
