@@ -690,6 +690,17 @@
         </div>
         <div class="body"></div>
       </div>
+
+      <div class="chart jenkins-flakes">
+        <div class="header">
+          <div class="title">Jenkins test flakes on master</div>
+            <div class="help-tip">
+                <p class="tooltip">Continuous integration tests run on the build system that flaked on master. These shouldn't happen as a general rule and disruptive to other teams.</p>
+            </div>
+        </div>
+        <div class="body"></div>
+      </div>
+
       
       <div class="chart fab-deploys">
         <div class="header">
@@ -878,7 +889,7 @@
           return r.user !== undefined && r.event !== undefined  && r.user.properties.job !== undefined && r.user.properties.job.NAME == "master" && r.user.properties.git !== undefined && r.user.properties.git.BRANCH == "origin/master";
         }
 
-        var jenkinsBuildEvents = [{event: 'jenkins.build.start'}, {event: 'jenkins.build.finish'}, {event: 'jenkins.step.start'}, {event: 'jenkins.step.finish'}];
+        var jenkinsBuildEvents = [{event: 'jenkins.build.start'}, {event: 'jenkins.build.finish'}, {event: 'jenkins.step.start'}, {event: 'jenkins.step.finish'}, {event: 'jenkins.test.failure'}];
         
         function jenkinsStartDate(dt) {
            var requestedStart = Date.parse(dt) / 1000;
@@ -895,7 +906,7 @@
         }
 
         function jenkinsBuildsReducer(a, b) {
-          result = {start: undefined, finish: undefined, status: undefined, steps: {}};
+          result = {start: undefined, finish: undefined, status: undefined, steps: {}, tests: {}};
           
           for (var i in a) {
             if (a[i].start !== undefined) {
@@ -908,6 +919,9 @@
             for (var j in a[i].steps) {
               result.steps[j] = a[i].steps[j];
             }
+            for (var j in a[i].tests) {
+              result.tests[j] = a[i].tests[j];
+            }
           }
           
           for (var i in b) {
@@ -916,7 +930,7 @@
             } else if (b[i].event.name == "jenkins.build.finish") {
               result.finish = b[i].event.time;
               result.status = b[i].event.properties.status;
-            } else {
+            } else if (b[i].event.name == "jenkins.step.start" || b[i].event.name == "jenkins.step.finish") {
               key = jenkinsStepName(b[i].event);
               if (!result.steps.hasOwnProperty(key)) {
                 result.steps[key] = {start: undefined, finish: undefined, status: undefined};
@@ -926,8 +940,11 @@
               } else {
                 result.steps[key].finish = b[i].event.time;
                 result.steps[key].status = b[i].event.properties.status;
-              }
+              } 
+            } else if (b[i].event.name == "jenkins.test.failure" ) {
+              result.tests[b[i].event.properties.test] = "failure";
             }
+              
           }
           return result;
         }
@@ -1087,6 +1104,22 @@
           ;
         }
     </script>
+
+    <script type="text/jql" id="jenkinsTestFlakes">
+        function main() {
+          return join(
+            People(),
+            Events({event_selectors: jenkinsBuildEvents, from_date: jenkinsStartDate(params.from_date), to_date: params.to_date})
+            )
+            .filter(filterJenkinsMasterBuilds)
+            .groupBy(["event.distinct_id"], jenkinsBuildsReducer)
+            .filter(function (r) {return r.value.status == "success" && Object.keys(r.value.tests).length !== 0})
+            .groupBy([mixpanel.multiple_keys([function(r){return Object.keys(r.value.tests)}]), function (r) {return allignTimestampToDay(r.value.start / 1000)}], mixpanel.reducer.count())
+            .groupBy([function (t) {return t.key[0]}], dateReducer)
+            .map(fillDateGaps(function() {return 0;}, function(a, b){return a + b;}))
+        }
+    </script>
+
 
     <script type="text/jql" id="jenkinsTimeQuery">
         function main() {
@@ -1757,6 +1790,27 @@
           })
         });
         // End Jenkins Failure
+
+        //Jenkins Flakes
+        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 945801}).done(function(creds) {
+          $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData({
+            params: JSON.stringify(globalParams),
+            script: $.trim($("#commonJQLQueryLib").html()) + "\n" + $.trim($("#jenkinsTestFlakes").html()),
+          }, creds.apiKey, creds.apiSecret)).done(function(results) {
+            var chart_data = {};
+            for (var i in results) {
+                if (results[i].key[0] == "success") {
+                    continue;
+                }
+                chart_data[results[i].key[0]] = {}
+                for (var k in results[i].value) {
+                    chart_data[results[i].key[0]][k] = results[i].value[k];
+                }
+            }
+            $('.chart.jenkins-flakes .body').MPChart('setData', chart_data);
+          })
+        });
+        // End Jenkins Flakes
         
         // Jenkins Test Time
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 945801}).done(function(creds) {
