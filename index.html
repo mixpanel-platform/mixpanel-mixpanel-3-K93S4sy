@@ -690,17 +690,6 @@
         </div>
         <div class="body"></div>
       </div>
-
-      <div class="chart jenkins-flakes">
-        <div class="header">
-          <div class="title">Jenkins test flakes on master</div>
-            <div class="help-tip">
-                <p class="tooltip">Continuous integration tests run on the build system that flaked on master. These shouldn't happen as a general rule and disruptive to other teams.</p>
-            </div>
-        </div>
-        <div class="body"></div>
-      </div>
-
       
       <div class="chart fab-deploys">
         <div class="header">
@@ -768,7 +757,7 @@
           return result;
         }
 
-        function allignTimestampToMonth(timestamp) {
+        function alignTimestampToMonth(timestamp) {
           function padMonth(month) {
             if (month < 10) {
               return "0" + month;
@@ -780,24 +769,24 @@
           return new Date(date.getUTCFullYear() + "-" + padMonth(date.getUTCMonth() + 1) + "-01T00:00:00Z");
         }
 
-        function allignTimestampToDay(timestamp) {
+        function alignTimestampToDay(timestamp) {
           var timeGranularity = 1 * 60 * 60 * 24; //1d
           return timestampToDate(Math.floor((timestamp) / timeGranularity) * timeGranularity);
         }
 
-        function allignTimestampToWeek(timestamp) {
+        function alignTimestampToWeek(timestamp) {
           var timeShift = 3 * 60 * 60 * 24; // epoch is Thursday
           var timeGranularity = 7 * 60 * 60 * 24; //1d
           return timestampToDate(Math.floor((timestamp + timeShift) / timeGranularity) * timeGranularity - timeShift);
         }
 
-        function allignTimestamp(timestamp) {
+        function alignTimestamp(timestamp) {
           if (params.unit == 'day') {
-            return allignTimestampToDay(timestamp);
+            return alignTimestampToDay(timestamp);
           } else if (params.unit == 'week') {
-            return allignTimestampToWeek(timestamp);
+            return alignTimestampToWeek(timestamp);
           } else if (params.unit == 'month') {
-            return allignTimestampToMonth(timestamp);
+            return alignTimestampToMonth(timestamp);
           } else {
             return new Date();
           }
@@ -867,14 +856,14 @@
             var end = Date.parse(params.to_date) / 1000;
             var v = {};
             while (current <= end) {
-              var currentDateKey = allignTimestamp(current).toISOString().split('T')[0];
+              var currentDateKey = alignTimestamp(current).toISOString().split('T')[0];
               if (!v.hasOwnProperty(currentDateKey)) {
                 v[currentDateKey] = def();
               }
               current += 24 * 60 * 60;
             }
             for (var k in t.value) {
-              var currentDateKey = allignTimestamp(Date.parse(k) / 1000).toISOString().split('T')[0];
+              var currentDateKey = alignTimestamp(Date.parse(k) / 1000).toISOString().split('T')[0];
               if (v.hasOwnProperty(currentDateKey)) {
                 v[currentDateKey] = concat(v[currentDateKey], t.value[k]);
               }
@@ -889,12 +878,12 @@
           return r.user !== undefined && r.event !== undefined  && r.user.properties.job !== undefined && r.user.properties.job.NAME == "master" && r.user.properties.git !== undefined && r.user.properties.git.BRANCH == "origin/master";
         }
 
-        var jenkinsBuildEvents = [{event: 'jenkins.build.start'}, {event: 'jenkins.build.finish'}, {event: 'jenkins.step.start'}, {event: 'jenkins.step.finish'}, {event: 'jenkins.test.failure'}];
+        var jenkinsBuildEvents = [{event: 'jenkins.build.start'}, {event: 'jenkins.build.finish'}, {event: 'jenkins.step.start'}, {event: 'jenkins.step.finish'}];
         
         function jenkinsStartDate(dt) {
            var requestedStart = Date.parse(dt) / 1000;
            var dataStart = Date.parse("2016-07-26") / 1000;
-           return allignTimestampToDay(Math.max(requestedStart, dataStart)).toISOString().split('T')[0];
+           return alignTimestampToDay(Math.max(requestedStart, dataStart)).toISOString().split('T')[0];
         }
         
         function jenkinsStepName(e) {
@@ -906,7 +895,7 @@
         }
 
         function jenkinsBuildsReducer(a, b) {
-          result = {start: undefined, finish: undefined, status: undefined, steps: {}, tests: {}};
+          result = {start: undefined, finish: undefined, status: undefined, steps: {}};
           
           for (var i in a) {
             if (a[i].start !== undefined) {
@@ -919,9 +908,6 @@
             for (var j in a[i].steps) {
               result.steps[j] = a[i].steps[j];
             }
-            for (var j in a[i].tests) {
-              result.tests[j] = a[i].tests[j];
-            }
           }
           
           for (var i in b) {
@@ -930,7 +916,7 @@
             } else if (b[i].event.name == "jenkins.build.finish") {
               result.finish = b[i].event.time;
               result.status = b[i].event.properties.status;
-            } else if (b[i].event.name == "jenkins.step.start" || b[i].event.name == "jenkins.step.finish") {
+            } else {
               key = jenkinsStepName(b[i].event);
               if (!result.steps.hasOwnProperty(key)) {
                 result.steps[key] = {start: undefined, finish: undefined, status: undefined};
@@ -940,11 +926,8 @@
               } else {
                 result.steps[key].finish = b[i].event.time;
                 result.steps[key].status = b[i].event.properties.status;
-              } 
-            } else if (b[i].event.name == "jenkins.test.failure" ) {
-              result.tests[b[i].event.properties.test] = "failure";
+              }
             }
-              
           }
           return result;
         }
@@ -984,7 +967,7 @@
         function main() {
             return join(Events({from_date: params.from_date, to_date: params.to_date, event_selectors: [{event: 'pagerduty.incident.escalate'}]}), People())
             .filter(function (t) {return t.event !== undefined && t.user !== undefined && t.event.properties.channel.type == "timeout"})
-            .groupBy([escalationPolicyName/*, isExplicitEscalation*/, function (t) {return allignTimestampToDay(t.event.time / 1000)}/*, "event.distinct_id"*/], mixpanel.reducer.count())
+            .groupBy([escalationPolicyName/*, isExplicitEscalation*/, function (t) {return alignTimestampToDay(t.event.time / 1000)}/*, "event.distinct_id"*/], mixpanel.reducer.count())
             //.groupBy([function (t) {return [t.key[0] + " " + t.key[1], t.key[2]]}], mixpanel.reducer.count())
             .groupBy([function (t) {return t.key[0]}], dateReducer)
             .map(fillDateGaps(function() {return 0;}, function(a, b){return a + b;}))
@@ -1000,7 +983,7 @@
           return date.getHours() < nightEnd  || date.getHours() >= nightStart;
         }
 
-        function allignEventTime(t) {
+        function alignEventTime(t) {
           if (t.event === undefined)
              return null;
              
@@ -1028,7 +1011,7 @@
             var end = Date.parse(params.to_date) / 1000;
             var v = {};
             while (current <= end) {
-              var currentDateKey = allignTimestamp(current).toISOString().split('T')[0];
+              var currentDateKey = alignTimestamp(current).toISOString().split('T')[0];
               var currentDate = timestampToDate(current);
               if (!v.hasOwnProperty(currentDateKey)) {
                 v[currentDateKey] = 0;
@@ -1047,7 +1030,7 @@
             Events({from_date: params.from_date, to_date: params.to_date, event_selectors: [{event: 'pagerduty.incident.notify'}]}), People()
           )
           .filter(eventsFilter)
-          .groupBy([escalationPolicyName, allignEventTime], function(a, b) {return 1;})
+          .groupBy([escalationPolicyName, alignEventTime], function(a, b) {return 1;})
           .groupBy([function(t){return t.key[0]}], dateReducer)
           .map(computeNotifications)
           ;
@@ -1082,7 +1065,7 @@
             event_selectors: [{'event': 'Fabric command'}]
           })
           .filter(deploymentsFilter)
-          .groupBy(["properties.task", function (e) {return allignTimestampToDay(e.time / 1000)}], countElapsedReducer)
+          .groupBy(["properties.task", function (e) {return alignTimestampToDay(e.time / 1000)}], countElapsedReducer)
           .groupBy([function (e) {return e.key[0]}], reduceOnTheFirstField)
           .map(fillDateGaps(function(){ return {elapsed:0, count:0}; }, function(a, b) { a.elapsed += b.elapsed; a.count += b.count; return a; }))
           ;
@@ -1098,42 +1081,80 @@
             .filter(filterJenkinsMasterBuilds)
             .groupBy(["event.distinct_id"], jenkinsBuildsReducer)
             .filter(function (r) {return r.value.start !== undefined})
-            .groupBy([function(r) { return jenkinsFailedStep(r.value); }, function (r) {return allignTimestampToDay(r.value.start / 1000)}], mixpanel.reducer.count())
+            .groupBy(
+                [
+                 function(r) { return jenkinsFailedStep(r.value); }, 
+                 function (r) {return alignTimestampToDay(r.value.start / 1000)}
+                 ], mixpanel.reducer.count())
             .groupBy([function (t) {return t.key[0]}], dateReducer)
             .map(fillDateGaps(function() {return 0;}, function(a, b){return a + b;}))
           ;
         }
     </script>
-
-    <script type="text/jql" id="jenkinsTestFlakes">
-        function main() {
-          return join(
-            People(),
-            Events({event_selectors: jenkinsBuildEvents, from_date: jenkinsStartDate(params.from_date), to_date: params.to_date})
-            )
-            .filter(filterJenkinsMasterBuilds)
-            .groupBy(["event.distinct_id"], jenkinsBuildsReducer)
-            .filter(function (r) {return r.value.status == "success" && Object.keys(r.value.tests).length !== 0})
-            .groupBy([mixpanel.multiple_keys([function(r){return Object.keys(r.value.tests)}]), function (r) {return allignTimestampToDay(r.value.start / 1000)}], mixpanel.reducer.count())
-            .groupBy([function (t) {return t.key[0]}], dateReducer)
-            .map(fillDateGaps(function() {return 0;}, function(a, b){return a + b;}))
-        }
-    </script>
-
 
     <script type="text/jql" id="jenkinsTimeQuery">
-        function main() {
+        function breakoutJenkinsSubsteps(r){
+            var steps = r.value.steps;
+            var day = alignTimestampToDay(r.value.start / 1000);
+            var results = [];
+            var total = {
+                "key": ["total", day],
+                "value": {
+                   "elapsed": (r.value.finish - r.value.start) / 1000,
+                   "count": 1
+              }
+            };
+            for (var i in steps){
+              var step = steps[i];
+              var name = i;
+              if (step.finish === undefined) {
+                continue;
+              }
+              var elapsed = (step.finish - step.start) / 1000;
+              results.push({
+                "key": [name, day],
+                "value": {
+                    "elapsed": elapsed,
+                    "count": 1
+                 }
+              })
+            }
+            results.push(total);
+            return results;
+        }
+
+        function jenkinsTimeQueryReducer(accums, items) {
+          var res = {
+            "elapsed": 0,
+            "count": 0
+          };
+          _.each(items, function(item) {
+            if (item.value.elapsed !== undefined) {
+            res.elapsed += item.value.elapsed;
+            res.count += item.value.count;
+            }
+          })
+          _.each(accums, function(a){
+            if (a.elapsed !== undefined) {
+            res.elapsed += a.elapsed;
+            res.count += a.count;
+            }
+          })
+          return res;
+        }
+
+         function main() {
           return join(
             People(),
             Events({event_selectors: jenkinsBuildEvents, from_date: jenkinsStartDate(params.from_date), to_date: params.to_date})
-            )
-            .filter(filterJenkinsMasterBuilds)
+            ).filter(filterJenkinsMasterBuilds)
             .groupBy(["event.distinct_id"], jenkinsBuildsReducer)
             .filter(function (r) {return r.value.status == "success" && r.value.start !== undefined})
-            .map(function (r) { return {"key":["Master", allignTimestampToDay(r.value.start / 1000)], "value": {"elapsed": (r.value.finish - r.value.start) / 1000, "count": 1}}; })
-            .groupBy([function(r) {return r.key[0]}], reduceOnTheFirstField)
-            .map(fillDateGaps(function(){ return {elapsed:0, count:0}; }, function(a, b) { a.elapsed += b.elapsed; a.count += b.count; return a; }))
-          ;
+            .map(breakoutJenkinsSubsteps)
+            .flatten()
+            .groupBy([function(t) {return t.key[0];}, function(t) {return t.key[1];}], jenkinsTimeQueryReducer)
+            .groupBy([function (t) {return t.key[0]}], dateReducer)
+            .map(fillDateGaps(function(){ return {elapsed:0, count:0}; }, function(a, b) { a.elapsed += b.elapsed; a.count += b.count; return a; }));
         }
     </script>
      
@@ -1777,64 +1798,40 @@
             script: $.trim($("#commonJQLQueryLib").html()) + "\n" + $.trim($("#jenkinsFailureRateQuery").html()),
           }, creds.apiKey, creds.apiSecret)).done(function(results) {
             var chart_data = {};
-            for (var i in results) {
+            for (var i in results) { // name
                 if (results[i].key[0] == "success") {
                     continue;
                 }
                 chart_data[results[i].key[0]] = {}
-                for (var k in results[i].value) {
-                    chart_data[results[i].key[0]][k] = results[i].value[k];
+                for (var k in results[i].value) { //for each key for in name.value
+                    chart_data[results[i].key[0]][k] = results[i].value[k]; //chart[name][key] = result[name]value[key]
                 }
             }
             $('.chart.jenkins-failure .body').MPChart('setData', chart_data);
           })
         });
         // End Jenkins Failure
-
-        //Jenkins Flakes
-        getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 945801}).done(function(creds) {
-          $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData({
-            params: JSON.stringify(globalParams),
-            script: $.trim($("#commonJQLQueryLib").html()) + "\n" + $.trim($("#jenkinsTestFlakes").html()),
-          }, creds.apiKey, creds.apiSecret)).done(function(results) {
-            var chart_data = {};
-            for (var i in results) {
-                if (results[i].key[0] == "success") {
-                    continue;
-                }
-                chart_data[results[i].key[0]] = {}
-                for (var k in results[i].value) {
-                    chart_data[results[i].key[0]][k] = results[i].value[k];
-                }
-            }
-            $('.chart.jenkins-flakes .body').MPChart('setData', chart_data);
-          })
-        });
-        // End Jenkins Flakes
         
         // Jenkins Test Time
         getWithCredentials('https://mixpanel.com/admin/internal/api/project_credentials', {project_id: 945801}).done(function(creds) {
             $.post("https://mixpanel.com/api/2.0/custom_query_v1", signData({
               params: JSON.stringify(globalParams),
               script: $.trim($("#commonJQLQueryLib").html()) + "\n" + $.trim($("#jenkinsTimeQuery").html()),
-            }, creds.apiKey, creds.apiSecret)).done(function(jenkins_results) {
-              var chart_data = {};
-              builds = [["Jenkins", jenkins_results]]
-              for (var j in builds)
-              {
-                name = builds[j][0];
-                results = builds[j][1];
-                for (var i in results) {
-                  chart_data[name] = {};
-                  for (var k in results[i].value) {
-                    if (results[i].value[k].count > 0) {
-                      chart_data[name][k] = Math.floor(results[i].value[k].elapsed / results[i].value[k].count);
-                    } else {
-                      chart_data[name][k] = 0;
+            }, creds.apiKey, creds.apiSecret)).done(function(results) {
+                var chart_data = {};
+                for (var i in results) { // name
+                    result = results[i]
+                    name = result.key[0]
+                    chart_data[name] = {}
+                    for (var date in result.value) { //for each key for in name.value
+                        dateval = result.value[date]
+                        if (dateval.count == 0) {
+                            chart_data[name][date] = 0;
+                        } else {
+                            chart_data[name][date] = Math.floor(dateval.elapsed / dateval.count);
+                        }
                     }
-                  }
                 }
-              }
               $('.chart.jenkins-test-time .body').MPChart('setData', chart_data);
             })
         });
@@ -2058,5 +2055,4 @@
     </script>
   </body>
 </html>
-
 
